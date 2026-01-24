@@ -25,5 +25,9 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
+    env: {
+      browser: true,
+      es2020: true,
+    }
   },
 ])

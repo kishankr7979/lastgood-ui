@@ -8,7 +8,7 @@ const Events = () => {
     return (
         <div className="p-8 max-w-5xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2">Change Events</h1>
+                <h1 className="text-3xl font-bold mb-2">Events</h1>
                 <p className="text-text-secondary">Full audit log of all system changes.</p>
             </div>
             <Timeline events={events} isLoading={isLoading} error={error} />

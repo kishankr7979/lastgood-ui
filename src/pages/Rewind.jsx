@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 const Rewind = () => {
     // Default to "now" formatted for datetime-local input (YYYY-MM-DDThh:mm)
     const [incidentTime, setIncidentTime] = useState(() => {
-        return dayjs().format('YYYY-MM-DDTHH:mm');
+        return dayjs().utc().format('YYYY-MM-DDTHH:mm');
     });
     const [windowMinutes, setWindowMinutes] = useState(30);
     const [service, setService] = useState('');
@@ -64,7 +64,7 @@ const Rewind = () => {
                 <form onSubmit={handleSearch} className="flex flex-wrap items-end gap-4">
                     <div className="min-w-[200px] flex-1">
                         <label className="block text-sm font-medium text-text-muted mb-2 flex items-center gap-2">
-                            <Calendar size={16} /> Incident Time
+                            <Calendar size={16} /> Incident Time (UTC)
                         </label>
                         <input
                             type="datetime-local"

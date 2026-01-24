@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Events from './pages/Events';
@@ -6,14 +6,14 @@ import Rewind from './pages/Rewind';
 import EventDetail from './pages/EventDetail';
 import Settings from './pages/Settings';
 import Docs from './pages/Docs';
-import Onboarding from './pages/Onboarding';
+import Login from './pages/Login';
 
 
 // Simple Auth Guard
 const ProtectedRoute = ({ children }) => {
-  const apiKey = localStorage.getItem('api_key');
-  if (!apiKey) {
-    return <Navigate to="/onboarding" replace />;
+  const authToken = localStorage.getItem('authToken');
+  if (!authToken) {
+    return <Navigate to="/login" replace />;
   }
   return children;
 };
@@ -22,7 +22,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/login" element={<Login />} />
 
         <Route path="/" element={
           <ProtectedRoute>
