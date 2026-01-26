@@ -19,6 +19,8 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+
+
   return (
     <BrowserRouter>
       <Routes>
