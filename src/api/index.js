@@ -23,11 +23,21 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
+        const originalRequest = error.config;
+
         if (error.response?.status === 401) {
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
+            originalRequest._retryCount = originalRequest._retryCount || 0;
+
+            if (originalRequest._retryCount < 3) {
+                originalRequest._retryCount += 1;
+                return api(originalRequest);
+            } else {
+                localStorage.removeItem('authToken');
+                window.location.href = '/login';
+            }
         }
+
         return Promise.reject(error);
     }
 );
