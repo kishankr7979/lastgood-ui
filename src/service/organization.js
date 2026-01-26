@@ -1,6 +1,6 @@
-import api from '../api';
+import api from "../api";
 
 export const getOrganization = async () => {
-    const response = await api.get('/organization');
-    return response.data.data;
+  const response = await api.get("/organization");
+  return response.data.data;
 };
