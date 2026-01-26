@@ -8,7 +8,9 @@ const GitHubWebhookModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const webhookUrl = org?.id ? `https://lastgood-be.onrender.com/webhooks/github/${org.id}` : '';
+  const webhookUrl = org?.id
+    ? `https://api.lastgood.space/webhooks/github/${org.id}`
+    : "";
 
   const handleCopy = () => {
     if (!webhookUrl) return;
@@ -35,7 +37,7 @@ const GitHubWebhookModal = ({ isOpen, onClose }) => {
           <input
             type="text"
             readOnly
-            value={org?.id ? webhookUrl : 'Loading organization details...'}
+            value={org?.id ? webhookUrl : "Loading organization details..."}
             className="flex-1 bg-transparent font-mono text-sm text-text-secondary focus:outline-none"
           />
           <button

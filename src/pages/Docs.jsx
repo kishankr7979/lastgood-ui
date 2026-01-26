@@ -39,7 +39,7 @@ const Docs = () => {
               </span>
             </div>
             <pre className="p-4 overflow-x-auto text-sm font-mono text-accent/90">
-              {`curl -X POST https://lastgood-be.onrender.com/v1/change-events \\
+              {`curl -X POST https://api.lastgood.space/v1/change-events \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -87,7 +87,7 @@ const Docs = () => {
           </div>
           <div className="bg-gradient-card border border-white/10 rounded-xl p-6 hover:border-accent/50 transition-all duration-300 cursor-pointer group relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                        <h3 className="relative z-10 font-semibold text-text-primary mb-2 flex items-center justify-between">
+            <h3 className="relative z-10 font-semibold text-text-primary mb-2 flex items-center justify-between">
               Kubernetes Operator
               <span className="text-xs font-medium bg-bg-tertiary text-text-muted px-2 py-1 rounded-full">
                 Coming Soon
