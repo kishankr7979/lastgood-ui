@@ -62,7 +62,7 @@ const Docs = () => {
           >
             <div className="absolute inset-0 bg-gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <h3 className="relative z-10 font-semibold text-text-primary mb-2 flex items-center justify-between">
-              GitHub Actions
+              GitHub Webhook
               <ChevronRight
                 size={16}
                 className="opacity-0 group-hover:opacity-100 transition-opacity text-accent"

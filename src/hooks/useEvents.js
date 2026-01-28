@@ -1,5 +1,6 @@
 import api from '../api';
 import { useQuery } from '@tanstack/react-query';
+import { useApiKeys } from './useApiKeys';
 
 const fetchEvents = async () => {
     try {
@@ -15,8 +16,12 @@ const fetchEvents = async () => {
 };
 
 export const useEvents = () => {
+    const { hasApiKeys } = useApiKeys();
+
     return useQuery({
         queryKey: ['events'],
         queryFn: fetchEvents,
+        // Only enable the query if API keys exist.
+        enabled: hasApiKeys,
     });
 };

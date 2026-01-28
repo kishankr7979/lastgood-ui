@@ -11,12 +11,13 @@ import {
 import useOrgStore from "../stores/useOrgStore";
 import { useOrganization } from "../hooks/useOrganization";
 import LogoutConfirmationModal from "../components/LogoutConfirmationModal/LogoutConfirmationModal";
+import { useApiKeys } from "../hooks/useApiKeys";
+import { OnboardingModal } from "../components/OnboardingModal/OnboardingModal";
 
 const MainLayout = () => {
-  const location = useLocation();
-
   const { data: org } = useOrganization();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { hasApiKeys, refetch } = useApiKeys();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -91,7 +92,7 @@ const MainLayout = () => {
 
       {/* Main Content */}
       <main className="flex-1 ml-64">
-        <Outlet />
+        {hasApiKeys ? <Outlet /> : <OnboardingModal onFinished={refetch} />}
       </main>
       <LogoutConfirmationModal
         isOpen={isLogoutModalOpen}
