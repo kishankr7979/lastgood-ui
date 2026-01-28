@@ -3,6 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Search, Calendar, Clock, AlertCircle } from "lucide-react";
 import api from "../api";
 import { Timeline } from "../components/Timeline/Timeline";
+import { OverallRiskSummary } from '../components/OverallRiskSummary/OverallRiskSummary';
+import { Recommendations } from '../components/Recommendations/Recommendations';
+import { Correlations } from '../components/Correlations/Correlations';
 import { LoadingState } from "../components/LoadingState/LoadingState";
 import dayjs from "dayjs";
 
@@ -37,12 +40,13 @@ const Rewind = () => {
     if (queryParams.service) params.service = queryParams.service;
     if (queryParams.environment) params.environment = queryParams.environment;
 
-    const response = await api.get("/rewind", { params });
+    // Updated to use the scoring API endpoint
+    const response = await api.get("/scoring/incident", { params });
 
     if (response.data.success) {
       return response.data.data;
     }
-    throw new Error("Failed to rewind");
+    throw new Error("Failed to fetch scoring data");
   };
 
   const {
@@ -152,50 +156,30 @@ const Rewind = () => {
         )}
 
         {isFetched && result && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <div className="bg-gradient-card border border-white/5 rounded-xl p-5">
-                <div className="text-text-muted text-sm mb-1 uppercase tracking-wider">
-                  Total Events
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Left Column: Timeline */}
+            <div className="lg:col-span-2">
+              {result.individual_scores.length === 0 ? (
+                <div className="text-center py-12 text-text-muted border border-dashed border-border rounded-xl">
+                  No events found in this time window.
                 </div>
-                <div className="text-3xl font-bold text-text-primary">
-                  {result.summary.total_events}
+              ) : (
+                <div>
+                  <div className="flex items-center gap-2 mb-4 text-sm text-text-secondary">
+                    <div className="w-2 h-2 rounded-full bg-accent"></div>
+                    Timeline of Changes
+                  </div>
+                  <Timeline eventsWithScores={result.individual_scores} />
                 </div>
-              </div>
-              <div className="bg-gradient-card border border-white/5 rounded-xl p-5">
-                <div className="text-text-muted text-sm mb-1 uppercase tracking-wider">
-                  Services Affected
-                </div>
-                <div className="text-3xl font-bold text-text-primary">
-                  {Object.keys(result.summary.events_by_service || {}).length}
-                </div>
-              </div>
-              <div className="bg-gradient-card border border-white/5 rounded-xl p-5">
-                <div className="text-text-muted text-sm mb-1 uppercase tracking-wider">
-                  Most Recent
-                </div>
-                <div className="text-sm text-text-primary truncate">
-                  {result.summary.most_recent_event
-                    ? result.summary.most_recent_event.summary
-                    : "None"}
-                </div>
-              </div>
+              )}
             </div>
 
-            {result.events.length === 0 ? (
-              <div className="text-center py-12 text-text-muted border border-dashed border-border rounded-xl">
-                No events found in this time window.
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-center gap-2 mb-4 text-sm text-text-secondary">
-                  <div className="w-2 h-2 rounded-full bg-accent"></div>
-                  Timeline of Changes
-                </div>
-                <Timeline events={result.events} />
-              </div>
-            )}
+            {/* Right Column: Analysis & Recommendations */}
+            <div className="lg:col-span-1 space-y-6">
+                            <OverallRiskSummary assessment={result.overall_assessment} />
+              <Recommendations recommendations={result.overall_assessment.recommendations} />
+              <Correlations correlations={result.correlations} />
+            </div>
           </div>
         )}
       </div>

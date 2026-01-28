@@ -29,11 +29,11 @@ const EventDetail = () => {
 
     return (
         <div className="p-8 max-w-5xl mx-auto">
-            <Link to="/events" className="inline-flex items-center gap-2 text-text-muted hover:text-accent mb-6 transition-colors">
+                                    <Link to="/events" className="inline-flex items-center gap-2 text-text-muted hover:text-accent mb-6 transition-colors">
                 <ArrowLeft size={16} /> Back to Events
             </Link>
 
-            <div className="bg-bg-secondary border border-border rounded-xl overflow-hidden">
+                                    <div className="bg-bg-secondary border border-border rounded-xl overflow-hidden">
                 <div className="p-6 border-b border-border">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="px-2 py-1 bg-accent/10 text-accent rounded text-xs font-bold uppercase tracking-wide">

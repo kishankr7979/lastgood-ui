@@ -1,11 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { ChevronDown, GitCommit, User } from 'lucide-react';
+import { RiskScoreRing } from '../RiskScoreRing/RiskScoreRing';
+import { RiskFactorDetails } from '../RiskFactorDetails/RiskFactorDetails';
 
-export const EventCard = ({ event, isLast }) => {
+const getRiskColor = (level) => {
+    switch (level) {
+        case 'critical':
+            return { border: 'border-red-500/30', text: 'text-red-500' };
+        case 'high':
+            return { border: 'border-orange-500/30', text: 'text-orange-500' };
+        case 'medium':
+            return { border: 'border-yellow-500/30', text: 'text-yellow-400' };
+        case 'low':
+            return { border: 'border-green-500/30', text: 'text-green-400' };
+        default:
+            return { border: 'border-white/5', text: 'text-text-muted' };
+    }
+};
+
+export const EventCard = ({ event, riskAssessment, isLast }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
     const { summary, occurred_at, meta, service, environment, id, time_before_incident } = event;
+    const score = riskAssessment?.score;
+    const level = riskAssessment?.level;
 
     const date = dayjs(occurred_at).utc().format('MMM DD, h:mm A');
+    const riskColor = getRiskColor(level);
 
     return (
         <div className="flex gap-4">
@@ -17,34 +39,58 @@ export const EventCard = ({ event, isLast }) => {
 
             {/* Content Column */}
             <div className="flex-1 pb-8">
-                <Link to={`/events/${id}`} className="block bg-gradient-card border border-white/5 rounded-lg p-5 transition-all duration-300 hover:border-accent/50 group hover:shadow-[0_0_30px_rgba(45,212,191,0.1)] relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                    <div className="relative z-10 flex items-center gap-2 mb-3 text-sm text-text-secondary">
-                        <span className="font-semibold uppercase tracking-wide text-accent">{service}</span>
-                        <span className="bg-black/30 px-2 py-0.5 rounded text-xs border border-white/10">{environment}</span>
-                        <span className="ml-auto text-text-muted font-mono text-xs flex items-center gap-3">
-                            {time_before_incident && (
-                                <span className="text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20">
-                                    {time_before_incident}
-                                </span>
-                            )}
-                            {date}
-                        </span>
-                    </div>
+                <div className={`bg-gradient-card border ${riskAssessment ? riskColor.border : 'border-white/5'} rounded-lg transition-all duration-300 hover:border-accent/50 group hover:shadow-[0_0_30px_rgba(45,212,191,0.1)] relative overflow-hidden`}>
+                    <div className="p-5">
+                        <div className="grid grid-cols-12 gap-4">
+                            {/* Left Column: Event Details */}
+                            <div className="col-span-8">
+                                <div className="flex items-center gap-2 mb-3 text-sm text-text-secondary">
+                                    <span className="font-semibold uppercase tracking-wide text-accent">{service}</span>
+                                    <span className="bg-black/30 px-2 py-0.5 rounded text-xs border border-white/10">{environment}</span>
+                                </div>
+                                <Link to={`/events/${id}`} className="block group/link">
+                                    <h3 className="m-0 mb-3 text-xl font-medium text-text-primary group-hover/link:text-accent transition-colors">{summary}</h3>
+                                </Link>
+                                <div className="flex flex-wrap gap-4 text-sm text-text-muted border-t border-border pt-3 mt-1">
+                                    <div className="flex items-center gap-1.5">
+                                        <User size={14} />
+                                        {meta.author}
+                                    </div>
+                                    <div className="flex items-center gap-1.5 font-mono text-xs bg-bg-tertiary px-1.5 rounded">
+                                        <GitCommit size={14} />
+                                        {meta.commit.substring(0, 7)}
+                                    </div>
+                                </div>
+                            </div>
 
-                    <h3 className="m-0 mb-3 text-xl font-medium text-text-primary group-hover:text-accent transition-colors">{summary}</h3>
-
-                    <div className="flex flex-wrap gap-4 text-sm text-text-muted border-t border-border pt-3 mt-1">
-                        <div className="flex items-center gap-1.5">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            {meta.author}
-                        </div>
-                        <div className="flex items-center gap-1.5 font-mono text-xs bg-bg-tertiary px-1.5 rounded">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                            {meta.commit}
+                            {/* Right Column: Risk & Time */}
+                            <div className="col-span-4 text-right flex flex-col items-end justify-between">
+                                <div className="text-text-muted font-mono text-xs">
+                                    {time_before_incident && (
+                                        <span className="text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20 block mb-1">
+                                            {time_before_incident}
+                                        </span>
+                                    )}
+                                    {date}
+                                </div>
+                                {riskAssessment && (
+                                    <div className="flex flex-col items-center">
+                                        <RiskScoreRing score={score} level={level} />
+                                        <button onClick={() => setIsExpanded(!isExpanded)} className="mt-2 text-xs text-text-muted hover:text-accent flex items-center gap-1">
+                                            Why?
+                                            <ChevronDown size={14} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </Link>
+                    {isExpanded && riskAssessment && (
+                        <div className="p-5 border-t border-white/5 bg-black/20">
+                            <RiskFactorDetails factors={riskAssessment.factors} />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
