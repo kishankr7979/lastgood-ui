@@ -5,7 +5,7 @@ import Events from "./pages/Events";
 import Rewind from "./pages/Rewind";
 import EventDetail from "./pages/EventDetail";
 import Settings from "./pages/Settings";
-import Docs from "./pages/Docs";
+import Integrations from "./pages/Integrations";
 import Login from "./pages/Login";
 
 // Simple Auth Guard
@@ -35,7 +35,7 @@ function App() {
           <Route path="rewind" element={<Rewind />} />
           <Route path="events" element={<Events />} />
           <Route path="events/:id" element={<EventDetail />} />
-          <Route path="docs" element={<Docs />} />
+          <Route path="integrations" element={<Integrations />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

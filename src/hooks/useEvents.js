@@ -1,12 +1,15 @@
 import api from '../api';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useApiKeys } from './useApiKeys';
 
-const fetchEvents = async () => {
+const fetchEvents = async ({ pageParam = 0 }) => {
     try {
-        const response = await api.get('/change-events');
+        const response = await api.get(`/change-events?limit=10&offset=${pageParam}`);
         if (response.data.success) {
-            return response.data.data;
+            return {
+                data: response.data.data,
+                pagination: response.data.pagination
+            };
         } else {
             throw new Error('API reported failure');
         }
@@ -18,10 +21,19 @@ const fetchEvents = async () => {
 export const useEvents = () => {
     const { hasApiKeys } = useApiKeys();
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ['events'],
         queryFn: fetchEvents,
-        // Only enable the query if API keys exist.
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            if (!lastPage.pagination) return undefined;
+            const limit = lastPage.pagination.limit || 10;
+            const currentOffset = lastPage.pagination.offset || 0;
+            const total = lastPage.pagination.total;
+            const nextOffset = currentOffset + limit;
+            
+            return nextOffset < total ? nextOffset : undefined;
+        },
         enabled: hasApiKeys,
     });
 };

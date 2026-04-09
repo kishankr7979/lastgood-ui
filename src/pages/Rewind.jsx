@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Calendar, Clock, AlertCircle } from "lucide-react";
+import { Search, Calendar, Clock, AlertCircle, History } from "lucide-react";
 import api from "../api";
 import { Timeline } from "../components/Timeline/Timeline";
 import { OverallRiskSummary } from '../components/OverallRiskSummary/OverallRiskSummary';
@@ -62,42 +62,52 @@ const Rewind = () => {
   });
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Rewind</h1>
-        <p className="text-text-secondary">
-          Find what changed before production broke.
-        </p>
+    <div className="p-6 md:p-8 max-w-6xl mx-auto animate-fade-in">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+          <h1 className="text-2xl font-bold mb-2 flex items-center gap-3 text-white">
+             <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
+                <History className="text-accent h-5 w-5" />
+             </div>
+             Rewind Engine
+          </h1>
+          <p className="text-text-muted text-sm">
+            Time-travel through infrastructure changes to identify the root cause of an incident.
+          </p>
+        </div>
       </div>
 
       {/* Controls */}
-      <div className="bg-gradient-card border border-white/10 rounded-xl p-6 mb-8 shadow-xl">
+      <div className="surface border border-accent/20 rounded-2xl p-6 mb-8 shadow-md relative overflow-hidden">
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
+        <div className="absolute -left-10 -top-10 w-32 h-32 bg-accent/5 rounded-full blur-2xl"></div>
+        
         <form
           onSubmit={handleSearch}
-          className="flex flex-wrap items-end gap-4"
+          className="flex flex-wrap items-end gap-4 relative z-10"
         >
-          <div className="min-w-[200px] flex-1">
-            <label className="block text-sm font-medium text-text-muted mb-2 flex items-center gap-2">
-              <Calendar size={16} /> Incident Time (UTC)
+          <div className="min-w-[180px] flex-1">
+            <label className="text-xs font-semibold text-text-secondary mb-1.5 flex items-center gap-1.5 uppercase tracking-wide">
+              <Calendar size={12} className="text-accent" /> Incident Time (UTC)
             </label>
             <input
               type="datetime-local"
               value={incidentTime}
               onChange={(e) => setIncidentTime(e.target.value)}
               onClick={(e) => e.target.showPicker && e.target.showPicker()}
-              className="w-full bg-black/40 border border-white/5 rounded-lg px-4 py-2.5 text-text-primary focus:outline-none focus:border-accent/50 transition-colors placeholder-white/20 cursor-pointer icon-white"
+              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder-white/20 cursor-pointer shadow-inner"
               required
             />
           </div>
 
-          <div className="w-40">
-            <label className="block text-sm font-medium text-text-muted mb-2 flex items-center gap-2">
-              <Clock size={16} /> Window
+          <div className="w-36">
+            <label className="text-xs font-semibold text-text-secondary mb-1.5 flex items-center gap-1.5 uppercase tracking-wide">
+              <Clock size={12} className="text-accent" /> Analysis Window
             </label>
             <select
               value={windowMinutes}
               onChange={(e) => setWindowMinutes(Number(e.target.value))}
-              className="w-full bg-black/40 border border-white/5 rounded-lg px-4 py-2.5 text-text-primary focus:outline-none focus:border-accent/50 transition-colors appearance-none"
+              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all appearance-none cursor-pointer shadow-inner"
             >
               <option value={15}>15 Minutes</option>
               <option value={30}>30 Minutes</option>
@@ -108,38 +118,38 @@ const Rewind = () => {
             </select>
           </div>
 
-          <div className="w-48">
-            <label className="block text-sm font-medium text-text-muted mb-2">
-              Service (Optional)
+          <div className="w-44">
+            <label className="text-xs font-semibold text-text-secondary mb-1.5 block uppercase tracking-wide">
+              Target Service
             </label>
             <input
               type="text"
               value={service}
               onChange={(e) => setService(e.target.value)}
               placeholder="e.g. payments"
-              className="w-full bg-black/40 border border-white/5 rounded-lg px-4 py-2.5 text-text-primary focus:outline-none focus:border-accent/50 transition-colors placeholder-white/20"
+              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder-white/20 shadow-inner block"
             />
           </div>
 
-          <div className="w-40">
-            <label className="block text-sm font-medium text-text-muted mb-2">
-              Env (Optional)
+          <div className="w-36">
+            <label className="text-xs font-semibold text-text-secondary mb-1.5 block uppercase tracking-wide">
+              Environment
             </label>
             <input
               type="text"
               value={environment}
               onChange={(e) => setEnvironment(e.target.value)}
               placeholder="e.g. prod"
-              className="w-full bg-black/40 border border-white/5 rounded-lg px-4 py-2.5 text-text-primary focus:outline-none focus:border-accent/50 transition-colors placeholder-white/20"
+              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder-white/20 shadow-inner block"
             />
           </div>
 
           <button
             type="submit"
-            className="bg-gradient-accent hover:opacity-90 text-white font-bold px-8 py-2.5 rounded-lg flex items-center gap-2 transition-opacity h-[46px] shadow-lg shadow-accent/20"
+            className="bg-accent hover:bg-accent-hover text-background font-bold px-6 py-2 rounded-lg flex items-center gap-2 transition-all h-[38px] shadow-sm transform hover:-translate-y-0.5 text-sm"
           >
-            <Search size={18} />
-            Rewind
+            <Search size={16} />
+            Analyze
           </button>
         </form>
       </div>
