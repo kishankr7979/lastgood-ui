@@ -7,6 +7,7 @@ import EventDetail from "./pages/EventDetail";
 import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
 import Login from "./pages/Login";
+import { ToastContainer } from "./components/ui/Toast";
 
 // Simple Auth Guard
 const ProtectedRoute = ({ children }) => {
@@ -39,6 +40,7 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   );
 }

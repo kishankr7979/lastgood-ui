@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import { Terminal, Github, Webhook, ChevronRight, Copy, CheckCircle2, Blocks, ArrowRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Terminal, Github, Webhook, ChevronRight, Copy, CheckCircle2, Blocks, ArrowRight, Eye, EyeOff } from "lucide-react";
 import useOrgStore from "../stores/useOrgStore";
+import { getAPIKeyByOrg } from "../service/api-key";
 
 const Integrations = () => {
   const { org } = useOrgStore();
   const [copiedStates, setCopiedStates] = useState({});
+  const [showSecret, setShowSecret] = useState(false);
+
+  const { data: apiKeys = [] } = useQuery({
+    queryKey: ["apiKeys", org?.id],
+    queryFn: () => getAPIKeyByOrg(org.id),
+    enabled: !!org?.id,
+  });
+
+  const apiSecret = apiKeys?.key_hash || "Generate key in Settings";
 
   const webhookUrl = org?.id
-    ? `https://api.lastgood.space/api/webhooks/github/${org.id}`
+    ? `https://api.lastgood.space/webhooks/github/${org.id}`
     : "Loading organization details...";
 
   const handleCopy = (id, text) => {
@@ -61,7 +72,7 @@ const Integrations = () => {
 
                 {/* Step 1 */}
                 <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-accent bg-background text-accent font-bold z-10 shadow-[0_0_10px_rgba(45,212,191,0.5)] md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                  <div className="flex shrink-0 items-center justify-center w-8 h-8 rounded-full border-2 border-accent bg-background text-accent font-bold z-10 shadow-[0_0_10px_rgba(45,212,191,0.5)] md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                     1
                   </div>
                   <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl bg-black/40 border border-white/10 shadow-lg min-w-0">
@@ -83,24 +94,46 @@ const Integrations = () => {
 
                 {/* Step 2 */}
                 <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white/20 bg-background text-white/50 font-bold z-10 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                  <div className="flex shrink-0 items-center justify-center w-8 h-8 rounded-full border-2 border-white/20 bg-background text-white/50 font-bold z-10 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                     2
                   </div>
-                  <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl bg-black/40 border border-white/10 shadow-lg">
+                  <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl bg-black/40 border border-white/10 shadow-lg min-w-0">
                     <h3 className="font-bold text-white mb-2 text-xs uppercase tracking-wide">Webhook Secret</h3>
                     <p className="text-text-muted text-xs mb-3">We cryptographically verify all payloads coming from GitHub using your API Key to prevent spoofing.</p>
-                    <div className="bg-status-warning/10 border border-status-warning/20 rounded-md px-3 py-2 text-xs text-status-warning">
+                    <div className="bg-status-warning/10 border border-status-warning/20 rounded-md px-3 py-2 text-xs text-status-warning mb-3">
                       Paste your <strong className="font-bold">LastGood API Key</strong> into GitHub's <strong>"Secret"</strong> field.
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 bg-black/60 border border-white/5 rounded-md p-1 focus-within:border-accent/50 transition-colors min-w-0">
+                      <code className="px-2 text-[10px] sm:text-xs text-accent font-mono truncate min-w-0 flex-1">
+                        {showSecret ? apiSecret : "••••••••••••••••••••••••••••••••"}
+                      </code>
+                      <div className="flex items-center shrink-0">
+                        <button
+                          onClick={() => setShowSecret(!showSecret)}
+                          className="p-1.5 hover:bg-white/10 rounded transition-colors text-text-muted hover:text-white"
+                          title={showSecret ? "Hide Secret" : "Show Secret"}
+                        >
+                          {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                        <button
+                          onClick={() => handleCopy('github-secret', apiSecret)}
+                          className="p-1.5 hover:bg-white/10 rounded transition-colors text-text-muted hover:text-white"
+                          title="Copy Secret"
+                        >
+                          {copiedStates['github-secret'] ? <CheckCircle2 size={16} className="text-status-success" /> : <Copy size={16} />}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Step 3 */}
                 <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-white/20 bg-background text-white/50 font-bold z-10 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                  <div className="flex shrink-0 items-center justify-center w-8 h-8 rounded-full border-2 border-white/20 bg-background text-white/50 font-bold z-10 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                     3
                   </div>
-                  <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl bg-black/40 border border-white/10 shadow-lg">
+                  <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2rem)] p-4 rounded-xl bg-black/40 border border-white/10 shadow-lg min-w-0">
                     <h3 className="font-bold text-white mb-2 text-xs uppercase tracking-wide">Event Triggers</h3>
                     <p className="text-text-muted text-xs mb-3">Under "Which events would you like to trigger this webhook?", explicitly select "Let me select individual events".</p>
                     <div className="flex flex-wrap gap-2">

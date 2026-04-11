@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "../constants/index.js";
+import { toast } from "../components/ui/Toast";
 const api = axios.create({
   baseURL: API_BASE_URL + "/api",
   headers: {
@@ -34,7 +35,11 @@ api.interceptors.response.use(
       } else {
         localStorage.removeItem("authToken");
         window.location.href = "/login";
+        toast.error("Session expired, please login again");
       }
+    } else {
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || "An unexpected error occurred";
+      toast.error(errorMessage);
     }
 
     return Promise.reject(error);
