@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import useOrgStore from "../stores/useOrgStore";
 import { getAPIKeyByOrg } from "../service/api-key";
+import { contactCS } from "../util";
 
 const Integrations = () => {
   const { org } = useOrgStore();
@@ -130,7 +131,7 @@ const Integrations = () => {
         <section className="surface border border-accent/20 rounded-3xl overflow-hidden shadow-2xl relative">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent"></div>
           <div className="p-6 bg-black/20 space-y-8 relative before:absolute before:inset-0 before:ml-10 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-white/10 before:via-white/10 before:to-transparent">
-            
+
             {/* Step 1 */}
             <div className="relative flex items-start gap-6 group">
               <div className="flex shrink-0 items-center justify-center w-8 h-8 rounded-full border-2 border-accent bg-background text-accent font-bold z-10 shadow-[0_0_10px_rgba(45,212,191,0.5)]">
@@ -331,24 +332,22 @@ const Integrations = () => {
             <div
               key={channel.id}
               onClick={() => channel.active && setSelectedChannel(channel.id)}
-              className={`surface border rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between ${
-                channel.active
-                  ? "border-white/5 hover:border-accent/40 hover:shadow-[0_0_20px_rgba(45,212,191,0.08)] cursor-pointer hover:-translate-y-1"
-                  : "border-white/5 opacity-55 grayscale cursor-not-allowed"
-              }`}
+              className={`surface border rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between ${channel.active
+                ? "border-white/5 hover:border-accent/40 hover:shadow-[0_0_20px_rgba(45,212,191,0.08)] cursor-pointer hover:-translate-y-1"
+                : "border-white/5 opacity-55 grayscale cursor-not-allowed"
+                }`}
             >
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <div className={`p-2.5 rounded-xl border ${channel.active ? "bg-accent/10 border-accent/20 text-accent" : "bg-white/5 border-white/5 text-zinc-500"}`}>
                     <Icon size={20} />
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
-                    channel.status === "Recommended"
-                      ? "bg-status-success/15 border-status-success/20 text-status-success"
-                      : channel.status === "Active"
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${channel.status === "Recommended"
+                    ? "bg-status-success/15 border-status-success/20 text-status-success"
+                    : channel.status === "Active"
                       ? "bg-accent/15 border-accent/20 text-accent"
                       : "bg-white/5 border-white/5 text-zinc-400"
-                  }`}>
+                    }`}>
                     {channel.status}
                   </span>
                 </div>
@@ -381,7 +380,7 @@ const Integrations = () => {
           </h3>
           <p className="text-xs text-text-muted leading-relaxed">Reach out to our engineering team for custom connectors or onboarding configurations.</p>
         </div>
-        <button className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-semibold text-white transition-colors shrink-0">
+        <button onClick={contactCS} className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-semibold text-white transition-colors shrink-0">
           Contact Engineering Support
         </button>
       </div>

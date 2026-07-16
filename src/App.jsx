@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
 import Login from "./pages/Login";
 import { ToastContainer } from "./components/ui/Toast";
+import useHelpLoom from "./hooks/useHelpLoom";
 
 // Simple Auth Guard
 const ProtectedRoute = ({ children }) => {
@@ -19,6 +20,7 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  useHelpLoom()
   return (
     <BrowserRouter>
       <Routes>
