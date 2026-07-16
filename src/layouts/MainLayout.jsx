@@ -4,10 +4,10 @@ import {
   Clock,
   List,
   Settings,
-  BookOpen,
   LogOut,
   History,
-  Blocks
+  Blocks,
+  Sparkles
 } from "lucide-react";
 import { useOrganization } from "../hooks/useOrganization";
 import LogoutConfirmationModal from "../components/LogoutConfirmationModal/LogoutConfirmationModal";
@@ -25,17 +25,17 @@ const MainLayout = () => {
   };
 
   const navItems = [
-    { path: "/rewind", label: "Rewind", icon: Clock },
-    { path: "/events", label: "Dashboard", icon: List },
-    { path: "/integrations", label: "Integrations", icon: Blocks },
-    { path: "/settings", label: "Settings", icon: Settings },
+    { path: "/rewind", label: "AI Incident Rewind", icon: Clock },
+    { path: "/events", label: "Telemetry Feed", icon: List },
+    { path: "/integrations", label: "Ingestion Channels", icon: Blocks },
+    { path: "/settings", label: "Configuration", icon: Settings },
   ];
 
   return (
     <div className="flex min-h-screen font-sans selection:bg-accent/30 selection:text-white bg-grid">
-      {/* Sidebar - Sleek dark pane */}
-      <aside className="w-64 border-r border-white/5 bg-black/40 backdrop-blur-2xl flex flex-col fixed h-full z-50">
-        <div className="p-6 pb-4">
+      {/* Sidebar - Sleek Dark Pane */}
+      <aside className="w-64 border-r border-white/[0.05] bg-black/45 backdrop-blur-2xl flex flex-col fixed h-full z-50">
+        <div className="p-6 pb-3">
           <div className="flex items-center gap-3 cursor-pointer group">
             <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/20 shadow-[0_0_15px_rgba(45,212,191,0.15)] group-hover:shadow-[0_0_25px_rgba(45,212,191,0.3)] transition-all duration-300 group-hover:scale-105 overflow-hidden">
                <div className="absolute inset-0 bg-accent/20 animate-[spin_3s_linear_infinite] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -47,8 +47,25 @@ const MainLayout = () => {
           </div>
         </div>
 
-        <div className="px-4 py-2">
-           <div className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-2 mt-2 ml-2">Main Menu</div>
+        {/* AI Agent Status Badge */}
+        <div className="px-4 py-2.5 border-b border-white/[0.05] mb-2 bg-black/10">
+          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-accent/20 bg-accent/5 shadow-[0_0_15px_rgba(45,212,191,0.05)]">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+            </span>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold text-white tracking-wide uppercase leading-none flex items-center gap-1">
+                Diagnostic AI
+                <Sparkles size={8} className="text-accent fill-accent/45 animate-pulse" />
+              </span>
+              <span className="text-[9px] text-accent font-semibold mt-0.5 leading-none">Agent Online</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-4 py-1">
+           <div className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 mt-2 ml-2">AI Diagnostic Suite</div>
         </div>
 
         <nav className="flex-1 px-3 space-y-1">
@@ -70,9 +87,6 @@ const MainLayout = () => {
                   <>
                     <Icon size={16} className={isActive ? "text-accent" : "text-text-muted group-hover:text-white"} />
                     <span className="relative z-10">{item.label}</span>
-                    {isActive && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-accent rounded-r-md shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
-                    )}
                   </>
                 )}
               </NavLink>
@@ -80,7 +94,8 @@ const MainLayout = () => {
           })}
         </nav>
 
-        <div className="p-4">
+        {/* Footer Organization & Logout Info */}
+        <div className="p-4 border-t border-white/[0.05] bg-black/10">
           <div className="surface p-2 rounded-xl flex items-center gap-3 border border-white/5 hover:border-white/10 transition-colors">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent to-blue-500 flex items-center justify-center shadow-lg uppercase font-bold text-white text-xs">
               {org?.name?.charAt(0) || 'O'}
@@ -103,7 +118,7 @@ const MainLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 relative min-w-0">
+      <main className="flex-1 ml-64 relative min-w-0 bg-transparent">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
         <div className="p-4">
           {hasApiKeys ? <Outlet /> : <OnboardingModal onFinished={refetch} />}

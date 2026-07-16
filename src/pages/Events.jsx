@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEvents } from '../hooks/useEvents';
 import { Timeline } from '../components/Timeline/Timeline';
-import { Activity, ShieldCheck, AlertTriangle, List, Loader2 } from 'lucide-react';
+import { Activity, ShieldCheck, AlertTriangle, List, Loader2, Info } from 'lucide-react';
 
 const Events = () => {
     const { 
@@ -34,34 +34,62 @@ const Events = () => {
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 flex-wrap animate-slide-up">
-                <div className="surface p-5 rounded-xl relative overflow-hidden group hover:border-accent/40 shadow-md transition-all duration-300">
+                {/* Total Events */}
+                <div className="surface p-5 rounded-xl relative overflow-hidden group hover:border-accent/40 hover:shadow-[0_0_25px_rgba(45,212,191,0.1)] shadow-md transition-all duration-300">
                     <div className="absolute top-0 right-0 p-3 opacity-[0.03] group-hover:opacity-10 transition-opacity">
                         <Activity size={64} />
                     </div>
                     <div className="relative z-10">
-                        <h3 className="text-text-secondary font-medium text-xs uppercase tracking-wider mb-2 flex items-center gap-2"><Activity size={14} className="text-accent" /> Total Events (24h)</h3>
+                        <h3 className="text-text-secondary font-medium text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <Activity size={14} className="text-accent animate-pulse" /> 
+                            Total Events (24h)
+                        </h3>
                         <p className="text-3xl font-bold text-white tracking-tight">{totalEvents}</p>
                     </div>
                     <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-accent to-transparent w-full opacity-50"></div>
                 </div>
                 
-                <div className="surface p-5 rounded-xl relative overflow-hidden group hover:border-status-success/40 shadow-md transition-all duration-300">
+                {/* Security Posture */}
+                <div className="surface p-5 rounded-xl relative overflow-hidden group hover:border-status-success/40 hover:shadow-[0_0_25px_rgba(52,211,153,0.1)] shadow-md transition-all duration-300">
                     <div className="absolute top-0 right-0 p-3 opacity-[0.03] group-hover:opacity-10 transition-opacity">
                         <ShieldCheck size={64} />
                     </div>
                     <div className="relative z-10">
-                        <h3 className="text-text-secondary font-medium text-xs uppercase tracking-wider mb-2 flex items-center gap-2"><ShieldCheck size={14} className="text-status-success" /> Security posture</h3>
+                        <h3 className="text-text-secondary font-medium text-xs uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span className="flex items-center gap-2">
+                                <ShieldCheck size={14} className="text-status-success" /> 
+                                Security posture
+                            </span>
+                            <div className="group/tooltip relative inline-block cursor-help z-20">
+                                <Info size={14} className="text-text-muted hover:text-white transition-colors" />
+                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 w-48 bg-[#0a0a0c]/90 backdrop-blur-md border border-white/10 text-[10px] text-text-secondary p-2 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity shadow-xl text-center leading-normal font-sans normal-case">
+                                    Simulated posture score for MVP launch monitoring. Real-time scanning rules coming soon.
+                                </span>
+                            </div>
+                        </h3>
                         <p className="text-3xl font-bold text-white tracking-tight">98 <span className="text-base text-text-muted font-normal">/ 100</span></p>
                     </div>
                     <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-status-success to-transparent w-full opacity-50"></div>
                 </div>
                 
-                <div className="surface p-5 rounded-xl relative overflow-hidden group hover:border-status-warning/40 shadow-md transition-all duration-300">
+                {/* Active Alerts */}
+                <div className="surface p-5 rounded-xl relative overflow-hidden group hover:border-status-warning/40 hover:shadow-[0_0_25px_rgba(251,191,36,0.1)] shadow-md transition-all duration-300">
                     <div className="absolute top-0 right-0 p-3 opacity-[0.03] group-hover:opacity-10 transition-opacity">
                         <AlertTriangle size={64} />
                     </div>
                     <div className="relative z-10">
-                        <h3 className="text-text-secondary font-medium text-xs uppercase tracking-wider mb-2 flex items-center gap-2"><AlertTriangle size={14} className="text-status-warning" /> Active Alerts</h3>
+                        <h3 className="text-text-secondary font-medium text-xs uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span className="flex items-center gap-2">
+                                <AlertTriangle size={14} className="text-status-warning" /> 
+                                Active Alerts
+                            </span>
+                            <div className="group/tooltip relative inline-block cursor-help z-20">
+                                <Info size={14} className="text-text-muted hover:text-white transition-colors" />
+                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 w-48 bg-[#0a0a0c]/90 backdrop-blur-md border border-white/10 text-[10px] text-text-secondary p-2 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity shadow-xl text-center leading-normal font-sans normal-case">
+                                    Alert rules are running in simulation mode against sandbox environments.
+                                </span>
+                            </div>
+                        </h3>
                         <p className="text-3xl font-bold text-white tracking-tight">0</p>
                     </div>
                     <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-status-warning to-transparent w-full opacity-50"></div>

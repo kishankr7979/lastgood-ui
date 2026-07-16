@@ -69,7 +69,7 @@ const Rewind = () => {
              <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
                 <History className="text-accent h-5 w-5" />
              </div>
-             Rewind Engine
+             AI Diagnostics Rewind
           </h1>
           <p className="text-text-muted text-sm">
             Time-travel through infrastructure changes to identify the root cause of an incident.
@@ -87,9 +87,18 @@ const Rewind = () => {
           className="flex flex-wrap items-end gap-4 relative z-10"
         >
           <div className="min-w-[180px] flex-1">
-            <label className="text-xs font-semibold text-text-secondary mb-1.5 flex items-center gap-1.5 uppercase tracking-wide">
-              <Calendar size={12} className="text-accent" /> Incident Time (UTC)
-            </label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-xs font-semibold text-text-secondary flex items-center gap-1.5 uppercase tracking-wide">
+                <Calendar size={12} className="text-accent" /> Incident Time (UTC)
+              </label>
+              <button
+                type="button"
+                onClick={() => setIncidentTime(dayjs().utc().format("YYYY-MM-DDTHH:mm"))}
+                className="text-[10px] text-accent hover:text-accent-hover hover:underline transition-colors uppercase tracking-wider font-bold"
+              >
+                Set to Now
+              </button>
+            </div>
             <input
               type="datetime-local"
               value={incidentTime}
