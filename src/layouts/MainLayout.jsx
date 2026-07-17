@@ -33,13 +33,13 @@ const MainLayout = () => {
 
   return (
     <div className="flex min-h-screen font-sans selection:bg-accent/30 selection:text-white bg-grid">
-      {/* Sidebar - Sleek Dark Pane */}
-      <aside className="w-64 border-r border-white/[0.05] bg-black/45 backdrop-blur-2xl flex flex-col fixed h-full z-50">
+      {/* Sidebar - Sleek Dark Pane with Accessibility Improvements */}
+      <aside className="w-64 border-r border-white/[0.05] bg-black/45 backdrop-blur-2xl flex flex-col fixed h-full z-50" role="navigation" aria-label="Main navigation">
         <div className="p-6 pb-3">
-          <div className="flex items-center gap-3 cursor-pointer group">
+          <div className="flex items-center gap-3 cursor-pointer group" role="button" tabIndex={0}>
             <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/20 shadow-[0_0_15px_rgba(45,212,191,0.15)] group-hover:shadow-[0_0_25px_rgba(45,212,191,0.3)] transition-all duration-300 group-hover:scale-105 overflow-hidden">
                <div className="absolute inset-0 bg-accent/20 animate-[spin_3s_linear_infinite] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-               <History className="h-4 w-4 text-accent relative z-10 group-hover:-rotate-45 transition-transform duration-500" />
+               <History className="h-4 w-4 text-accent relative z-10 group-hover:-rotate-45 transition-transform duration-500" aria-hidden="true" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white hover:text-white">
               Last<span className="text-accent font-mono italic opacity-90 tracking-tighter">Good</span>
@@ -49,15 +49,15 @@ const MainLayout = () => {
 
         {/* AI Agent Status Badge */}
         <div className="px-4 py-2.5 border-b border-white/[0.05] mb-2 bg-black/10">
-          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-accent/20 bg-accent/5 shadow-[0_0_15px_rgba(45,212,191,0.05)]">
-            <span className="relative flex h-2 w-2">
+          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-accent/20 bg-accent/5 shadow-[0_0_15px_rgba(45,212,191,0.05)]" role="status" aria-live="polite">
+            <span className="relative flex h-2 w-2" aria-hidden="true">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
             </span>
             <div className="flex flex-col">
               <span className="text-[10px] font-bold text-white tracking-wide uppercase leading-none flex items-center gap-1">
                 Diagnostic AI
-                <Sparkles size={8} className="text-accent fill-accent/45 animate-pulse" />
+                <Sparkles size={8} className="text-accent fill-accent/45 animate-pulse" aria-hidden="true" />
               </span>
               <span className="text-[9px] text-accent font-semibold mt-0.5 leading-none">Agent Online</span>
             </div>
@@ -68,7 +68,7 @@ const MainLayout = () => {
            <div className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 mt-2 ml-2">AI Diagnostic Suite</div>
         </div>
 
-        <nav className="flex-1 px-3 space-y-1">
+        <nav className="flex-1 px-3 space-y-1" aria-label="Navigation menu">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -82,10 +82,11 @@ const MainLayout = () => {
                       : "text-text-secondary hover:text-white hover:bg-white/5 border border-transparent"
                   }`
                 }
+                aria-current={({ isActive }) => isActive ? "page" : undefined}
               >
                 {({ isActive }) => (
                   <>
-                    <Icon size={16} className={isActive ? "text-accent" : "text-text-muted group-hover:text-white"} />
+                    <Icon size={16} className={isActive ? "text-accent" : "text-text-muted group-hover:text-white"} aria-hidden="true" />
                     <span className="relative z-10">{item.label}</span>
                   </>
                 )}
@@ -96,8 +97,8 @@ const MainLayout = () => {
 
         {/* Footer Organization & Logout Info */}
         <div className="p-4 border-t border-white/[0.05] bg-black/10">
-          <div className="surface p-2 rounded-xl flex items-center gap-3 border border-white/5 hover:border-white/10 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent to-blue-500 flex items-center justify-center shadow-lg uppercase font-bold text-white text-xs">
+          <div className="surface p-3 rounded-xl flex items-center gap-3 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent to-blue-500 flex items-center justify-center shadow-lg uppercase font-bold text-white text-xs" aria-hidden="true">
               {org?.name?.charAt(0) || 'O'}
             </div>
             <div className="flex flex-col flex-1 overflow-hidden">
@@ -110,17 +111,18 @@ const MainLayout = () => {
               onClick={() => setIsLogoutModalOpen(true)}
               className="text-text-muted hover:text-status-error transition-colors p-1.5 rounded-lg hover:bg-status-error/10"
               title="Logout"
+              aria-label="Logout"
             >
-              <LogOut size={16} />
+              <LogOut size={16} aria-hidden="true" />
             </button>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 relative min-w-0 bg-transparent">
+      <main className="flex-1 ml-64 relative min-w-0 bg-transparent" role="main">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-        <div className="p-4">
+        <div className="p-4 sm:p-6 md:p-8">
           {hasApiKeys ? <Outlet /> : <OnboardingModal onFinished={refetch} />}
         </div>
       </main>

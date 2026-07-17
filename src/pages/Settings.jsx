@@ -31,115 +31,134 @@ const Settings = () => {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">Organization Settings</h1>
-      <p className="text-text-secondary mb-8">
-        Manage your organization and API keys.
-      </p>
-
-      {apiKeys && apiKeys.key_hash ? (
-        <div className="bg-gradient-card border border-white/10 rounded-xl overflow-hidden mb-8 shadow-lg hover:border-accent/30 transition-all duration-300">
-          <div className="p-6 border-b border-white/10 bg-black/20">
-            <h2 className="font-semibold text-lg flex items-center gap-2">
-              <Shield size={20} className="text-accent" />
-              API Configuration
-            </h2>
+    <div className="p-8 max-w-4xl mx-auto animate-fade-in">
+      {/* Header */}
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold mb-2 text-white flex items-center gap-3">
+          <div className="p-2.5 bg-accent/10 rounded-lg border border-accent/20">
+            <Shield className="text-accent h-6 w-6" />
           </div>
-          <div className="p-6 space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-text-muted mb-2">
-                Active API Key
-              </label>
-              <div className="flex items-center gap-4">
-                <div className="flex-1 bg-bg-primary border border-border rounded-lg px-4 py-3 font-mono text-sm text-text-secondary relative group overflow-hidden">
-                  <div className="truncate">
-                    {showKey
-                      ? apiKeys.key_hash
-                      : "••••••••••••••••••••••••••••••••"}
+          Organization Settings
+        </h1>
+        <p className="text-text-muted text-sm leading-relaxed">
+          Manage your organization details, API keys, and integration credentials.
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        {/* API Configuration Section */}
+        {apiKeys && apiKeys.key_hash ? (
+          <div className="surface border border-accent/20 rounded-2xl overflow-hidden shadow-md">
+            <div className="p-6 border-b border-white/10 bg-black/40">
+              <h2 className="font-semibold text-lg flex items-center gap-2.5 text-white">
+                <div className="w-2 h-2 rounded-full bg-accent"></div>
+                API Configuration
+              </h2>
+            </div>
+            <div className="p-8 space-y-6">
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-3 uppercase tracking-wide">
+                  Active API Key
+                </label>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="flex-1 bg-black/60 border border-white/10 rounded-lg px-4 py-3 font-mono text-sm text-text-secondary overflow-hidden">
+                    <div className="truncate">
+                      {showKey
+                        ? apiKeys.key_hash
+                        : "••••••••••••••••••••••••••••••••"}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => setShowKey(!showKey)}
+                      className="px-4 py-2.5 text-xs text-accent hover:text-accent-hover font-semibold border border-accent/20 hover:border-accent/40 rounded-lg transition-all bg-accent/5 hover:bg-accent/10 whitespace-nowrap"
+                    >
+                      {showKey ? "Hide Key" : "Show Key"}
+                    </button>
+                    <button
+                      onClick={handleCopy}
+                      className="flex items-center gap-1.5 px-4 py-2.5 text-xs text-white hover:text-white font-semibold border border-white/10 hover:border-white/20 rounded-lg transition-all bg-white/5 hover:bg-white/10 whitespace-nowrap"
+                      title="Copy API Key"
+                    >
+                      {copied ? (
+                        <>
+                          <CheckCircle2 size={14} className="text-status-success animate-pulse" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={14} />
+                          <span>Copy Key</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    onClick={() => setShowKey(!showKey)}
-                    className="px-3 py-1.5 text-xs text-accent hover:text-accent-hover font-medium border border-accent/20 hover:border-accent/40 rounded-lg transition-colors bg-accent/5 hover:bg-accent/10"
-                  >
-                    {showKey ? "Hide" : "Show"}
-                  </button>
-                  <button
-                    onClick={handleCopy}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-text-primary hover:text-white font-medium border border-white/10 hover:border-white/20 rounded-lg transition-colors bg-white/5 hover:bg-white/10"
-                    title="Copy API Key"
-                  >
-                    {copied ? (
-                      <>
-                        <CheckCircle2 size={14} className="text-status-success" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={14} />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
+                <p className="text-xs text-text-muted mt-3">
+                  Use this key to authenticate API requests. Keep it secure and never share it publicly.
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <CreateAPIKey onKeyCreated={fetchApiKeys} />
+        )}
+
+        {/* Organization Details Section */}
+        <div className="surface border border-white/10 rounded-2xl overflow-hidden shadow-md">
+          <div className="p-6 border-b border-white/10 bg-black/40">
+            <h3 className="font-semibold text-lg flex items-center gap-2.5 text-white">
+              <div className="w-2 h-2 rounded-full bg-white/40"></div>
+              Organization Details
+            </h3>
+          </div>
+          <div className="p-8">
+            {isLoading && <LoadingState message="Fetching organization details..." />}
+
+            {error && (
+              <div className="bg-status-error/10 border border-status-error/30 text-status-error p-4 rounded-lg text-sm">
+                Failed to load organization details.
+              </div>
+            )}
+
+            {organization && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs text-text-muted uppercase tracking-wider font-semibold mb-2">
+                    Organization Name
+                  </label>
+                  <div className="text-text-primary text-lg font-medium bg-black/40 rounded-lg px-4 py-3">
+                    {organization.name}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-text-muted uppercase tracking-wider font-semibold mb-2">
+                    Current Plan
+                  </label>
+                  <div className="inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold bg-accent/10 text-accent border border-accent/20">
+                    {organization.plan.toUpperCase()}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-text-muted uppercase tracking-wider font-semibold mb-2">
+                    Organization ID
+                  </label>
+                  <div className="text-text-secondary font-mono text-sm bg-black/40 rounded-lg px-4 py-3 break-all">
+                    {organization.id}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-text-muted uppercase tracking-wider font-semibold mb-2">
+                    Organization Slug
+                  </label>
+                  <div className="text-text-secondary font-mono text-sm bg-black/40 rounded-lg px-4 py-3">
+                    {organization.slug}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
-      ) : (
-        <CreateAPIKey onKeyCreated={fetchApiKeys} />
-      )}
-
-      <div className="bg-bg-secondary border border-border rounded-xl p-6 relative overflow-hidden">
-        <h3 className="font-semibold text-text-primary mb-4">
-          Organization Details
-        </h3>
-
-        {isLoading && <LoadingState message="Fetching org details..." />}
-
-        {error && (
-          <div className="text-status-error">
-            Failed to load organization details.
-          </div>
-        )}
-
-        {organization && (
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-xs text-text-muted uppercase tracking-wider mb-1">
-                Organization Name
-              </label>
-              <div className="text-text-secondary text-lg font-medium">
-                {organization.name}
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs text-text-muted uppercase tracking-wider mb-1">
-                Plan
-              </label>
-              <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/10 text-accent border border-accent/20">
-                {organization.plan.toUpperCase()}
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs text-text-muted uppercase tracking-wider mb-1">
-                Organization ID
-              </label>
-              <div className="text-text-secondary font-mono text-sm">
-                {organization.id}
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs text-text-muted uppercase tracking-wider mb-1">
-                Slug
-              </label>
-              <div className="text-text-secondary font-mono text-sm">
-                {organization.slug}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
