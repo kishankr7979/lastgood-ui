@@ -41,7 +41,7 @@ const MainLayout = () => {
                <div className="absolute inset-0 bg-accent/20 animate-[spin_3s_linear_infinite] blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                <History className="h-4 w-4 text-accent relative z-10 group-hover:-rotate-45 transition-transform duration-500" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-white hover:text-white">
+            <span className="text-lg font-bold tracking-tight text-white hover:text-white">
               Last<span className="text-accent font-mono italic opacity-90 tracking-tighter">Good</span>
             </span>
           </div>
@@ -65,7 +65,7 @@ const MainLayout = () => {
         </div>
 
         <div className="px-4 py-1">
-           <div className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 mt-2 ml-2">AI Diagnostic Suite</div>
+           <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 mt-2 ml-2">AI Diagnostic Suite</span>
         </div>
 
         <nav className="flex-1 px-3 space-y-1">
@@ -76,7 +76,7 @@ const MainLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group relative overflow-hidden ${
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all group relative overflow-hidden ${
                     isActive
                       ? "bg-accent/10 border border-accent/20 text-accent shadow-[0_0_15px_rgba(45,212,191,0.05)]"
                       : "text-text-secondary hover:text-white hover:bg-white/5 border border-transparent"
@@ -104,7 +104,7 @@ const MainLayout = () => {
               <span className="text-sm font-bold text-white truncate leading-tight">
                 {org?.name || 'Loading...'}
               </span>
-              <span className="text-[10px] text-accent leading-tight">{org?.plan || 'Free'} Plan</span>
+              <span className="text-xs text-accent leading-tight">{org?.plan || 'Free'} Plan</span>
             </div>
             <button
               onClick={() => setIsLogoutModalOpen(true)}

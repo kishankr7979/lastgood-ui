@@ -20,7 +20,7 @@ const Events = () => {
         <div className="p-6 md:p-8 max-w-[1400px] mx-auto animate-fade-in">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold mb-1 text-white">Dashboard</h1>
+                    <h1 className="text-4xl font-bold mb-1 text-white">Dashboard</h1>
                     <p className="text-text-muted text-sm">Monitor infrastructure configurations and code deployments.</p>
                 </div>
                 <div className="flex items-center gap-3 surface px-3 py-1.5 rounded-lg shadow-sm border border-accent/20">
@@ -44,7 +44,7 @@ const Events = () => {
                             <Activity size={14} className="text-accent animate-pulse" /> 
                             Total Events (24h)
                         </h3>
-                        <p className="text-3xl font-bold text-white tracking-tight">{totalEvents}</p>
+                        <p className="text-2xl font-bold text-white tracking-tight">{totalEvents}</p>
                     </div>
                     <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-accent to-transparent w-full opacity-50"></div>
                 </div>
@@ -62,12 +62,12 @@ const Events = () => {
                             </span>
                             <div className="group/tooltip relative inline-block cursor-help z-20">
                                 <Info size={14} className="text-text-muted hover:text-white transition-colors" />
-                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 w-48 bg-[#0a0a0c]/90 backdrop-blur-md border border-white/10 text-[10px] text-text-secondary p-2 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity shadow-xl text-center leading-normal font-sans normal-case">
+                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 w-48 bg-[#0a0a0c]/90 backdrop-blur-md border border-white/10 text-xs text-text-secondary p-2 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity shadow-xl text-center leading-normal font-sans normal-case">
                                     Simulated posture score for MVP launch monitoring. Real-time scanning rules coming soon.
                                 </span>
                             </div>
                         </h3>
-                        <p className="text-3xl font-bold text-white tracking-tight">98 <span className="text-base text-text-muted font-normal">/ 100</span></p>
+                        <p className="text-2xl font-bold text-white tracking-tight">98 <span className="text-base text-text-muted font-normal">/ 100</span></p>
                     </div>
                     <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-status-success to-transparent w-full opacity-50"></div>
                 </div>
@@ -85,12 +85,12 @@ const Events = () => {
                             </span>
                             <div className="group/tooltip relative inline-block cursor-help z-20">
                                 <Info size={14} className="text-text-muted hover:text-white transition-colors" />
-                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 w-48 bg-[#0a0a0c]/90 backdrop-blur-md border border-white/10 text-[10px] text-text-secondary p-2 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity shadow-xl text-center leading-normal font-sans normal-case">
+                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 w-48 bg-[#0a0a0c]/90 backdrop-blur-md border border-white/10 text-xs text-text-secondary p-2 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity shadow-xl text-center leading-normal font-sans normal-case">
                                     Alert rules are running in simulation mode against sandbox environments.
                                 </span>
                             </div>
                         </h3>
-                        <p className="text-3xl font-bold text-white tracking-tight">0</p>
+                        <p className="text-2xl font-bold text-white tracking-tight">0</p>
                     </div>
                     <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-status-warning to-transparent w-full opacity-50"></div>
                 </div>
@@ -99,7 +99,7 @@ const Events = () => {
             {/* Timeline Section */}
             <div className="bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-xl animate-slide-up relative overflow-hidden">
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
                         <List size={16} className="text-accent" />
                     </div>

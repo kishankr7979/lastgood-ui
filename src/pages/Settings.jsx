@@ -32,15 +32,15 @@ const Settings = () => {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">Organization Settings</h1>
-      <p className="text-text-secondary mb-8">
+      <h1 className="text-4xl font-bold mb-2">Organization Settings</h1>
+      <p className="text-text-secondary text-sm mb-8">
         Manage your organization and API keys.
       </p>
 
       {apiKeys && apiKeys.key_hash ? (
         <div className="bg-gradient-card border border-white/10 rounded-xl overflow-hidden mb-8 shadow-lg hover:border-accent/30 transition-all duration-300">
           <div className="p-6 border-b border-white/10 bg-black/20">
-            <h2 className="font-semibold text-lg flex items-center gap-2">
+            <h2 className="font-semibold text-xl flex items-center gap-2">
               <Shield size={20} className="text-accent" />
               API Configuration
             </h2>

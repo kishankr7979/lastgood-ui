@@ -10,7 +10,7 @@ export const Correlations = ({ correlations }) => {
                 <Zap className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
                 <div>
                     <h3 className="text-lg font-semibold text-yellow-400">Risk Amplifiers Detected</h3>
-                    <ul className="mt-2 space-y-1 text-yellow-300/80">
+                    <ul className="mt-2 space-y-1 text-yellow-300/80 text-sm">
                         {correlations.map((corr, index) => (
                             <li key={index}>- {corr.description}</li>
                         ))}

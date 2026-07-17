@@ -122,7 +122,7 @@ const Integrations = () => {
               <Github className="text-black h-7 w-7" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">GitHub Webhooks</h1>
+              <h1 className="text-3xl font-bold text-white flex items-center gap-2">GitHub Webhooks</h1>
               <p className="text-text-muted text-sm">Follow these steps to connect your repository to LastGood.</p>
             </div>
           </div>
@@ -141,11 +141,11 @@ const Integrations = () => {
                 <h3 className="font-bold text-white mb-2 text-sm uppercase tracking-wide">Configure Webhook</h3>
                 <p className="text-text-muted text-xs mb-3 leading-relaxed">
                   Go to your GitHub repository <ArrowRight size={10} className="inline mx-1" /> Settings <ArrowRight size={10} className="inline mx-1" /> Webhooks and click <strong className="text-white">"Add webhook"</strong>.
-                  Paste your unique ingestion URL and set the <strong className="text-white">Content type</strong> to <code className="bg-black/50 px-1.5 py-0.5 rounded text-[10px]">application/json</code>.
+                  Paste your unique ingestion URL and set the <strong className="text-white">Content type</strong> to <code className="bg-black/50 px-1.5 py-0.5 rounded text-xs">application/json</code>.
                 </p>
 
                 <div className="flex items-center justify-between gap-2 bg-black/60 border border-white/5 rounded-md p-1 focus-within:border-accent/50 transition-colors min-w-0">
-                  <code className="px-2 text-[10px] sm:text-xs text-accent font-mono truncate min-w-0 flex-1">{webhookUrl}</code>
+                  <code className="px-2 text-xs text-accent font-mono truncate min-w-0 flex-1">{webhookUrl}</code>
                   <button
                     onClick={() => handleCopy('github-url', webhookUrl)}
                     className="p-1.5 hover:bg-white/10 rounded transition-colors text-text-muted hover:text-white shrink-0"
@@ -172,7 +172,7 @@ const Integrations = () => {
                 </div>
 
                 <div className="flex items-center justify-between gap-2 bg-black/60 border border-white/5 rounded-md p-1 focus-within:border-accent/50 transition-colors min-w-0">
-                  <code className="px-2 text-[10px] sm:text-xs text-accent font-mono truncate min-w-0 flex-1">
+                  <code className="px-2 text-xs text-accent font-mono truncate min-w-0 flex-1">
                     {showSecret ? apiSecret : "••••••••••••••••••••••••••••••••"}
                   </code>
                   <div className="flex items-center shrink-0">

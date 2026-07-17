@@ -8,13 +8,13 @@ export const Timeline = ({ events, eventsWithScores, isLoading, error }) => {
     }
 
     if (error) {
-        return <div className="text-center p-8 text-status-error text-lg">Error: {error.message}</div>;
+        return <div className="text-center p-8 text-status-error text-base">Error: {error.message}</div>;
     }
 
     const items = eventsWithScores || events;
 
     if (!items || items.length === 0) {
-        return <div className="text-center p-8 text-text-muted text-lg">No events found.</div>;
+        return <div className="text-center p-8 text-text-muted text-base">No events found.</div>;
     }
 
     return (
