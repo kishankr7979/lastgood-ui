@@ -8,9 +8,9 @@ import { SimpleBarChart, SimpleLineChart, StatsCard } from '../components/EventF
 import dayjs from 'dayjs';
 
 const Events = () => {
-    const { 
-        data, 
-        isLoading, 
+    const {
+        data,
+        isLoading,
         error,
         fetchNextPage,
         hasNextPage,
@@ -41,7 +41,7 @@ const Events = () => {
     // Filter events based on criteria
     const filteredEvents = useMemo(() => {
         if (!events) return [];
-        
+
         return events.filter(event => {
             // Date range filter
             if (fromDate || toDate) {
@@ -129,11 +129,11 @@ const Events = () => {
                     <Filter size={16} className="text-accent" />
                     <h2 className="text-sm font-semibold text-white uppercase tracking-wide">Filters & Search</h2>
                 </div>
-                
+
                 <div className="space-y-3">
                     {/* Search Bar */}
-                    <SearchBar 
-                        value={searchQuery} 
+                    <SearchBar
+                        value={searchQuery}
                         onChange={setSearchQuery}
                         placeholder="Search by commit, author, service, or summary..."
                     />
@@ -165,7 +165,7 @@ const Events = () => {
                             onChange={setSelectedEnvironments}
                             placeholder="Select environments..."
                         />
-                        
+
                         {/* Active Filters Summary */}
                         {(searchQuery || fromDate || toDate || selectedServices.length > 0 || selectedEnvironments.length > 0) && (
                             <div className="text-xs text-text-muted ml-auto">
@@ -178,19 +178,19 @@ const Events = () => {
 
             {/* Analytics Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8 animate-slide-up">
-                <SimpleBarChart 
-                    data={analytics.byService.slice(0, 5)} 
-                    title="Top Services" 
+                <SimpleBarChart
+                    data={analytics.byService.slice(0, 5)}
+                    title="Top Services"
                     height="h-48"
                 />
-                <SimpleBarChart 
-                    data={analytics.byEnvironment} 
-                    title="Events by Environment" 
+                <SimpleBarChart
+                    data={analytics.byEnvironment}
+                    title="Events by Environment"
                     height="h-48"
                 />
-                <SimpleLineChart 
-                    data={analytics.byHour.slice(-8)} 
-                    title="Events Timeline (Last 8h)" 
+                <SimpleLineChart
+                    data={analytics.byHour.slice(-8)}
+                    title="Events Timeline (Last 8h)"
                     height="h-48"
                 />
             </div>
@@ -204,8 +204,8 @@ const Events = () => {
                     </div>
                     Recent Activity
                 </h2>
-                <Timeline events={filteredEvents} isLoading={isLoading} error={error} />
-                
+                <Timeline events={filteredEvents} isLoading={isLoading || !data} error={error} />
+
                 {hasNextPage && (
                     <div className="mt-8 mb-4 flex justify-center">
                         <button

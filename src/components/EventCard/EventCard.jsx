@@ -39,12 +39,25 @@ const RoleBadge = ({ variant }) => (
 
 export const EventCard = ({ event, riskAssessment, isLast, roleBadge = null, causalChainPosition = null }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const { summary, occurred_at, meta, service, environment, id, time_before_incident } = event;
+    const { summary, occurred_at, meta, service, environment, id, time_before_incident, source, type } = event;
     const score = riskAssessment?.score;
     const level = riskAssessment?.level;
 
     const date = dayjs(occurred_at).utc().format('MMM DD, h:mm A');
     const riskColor = getRiskColor(level);
+
+    // Build a commit URL when we have enough information.
+    // Priority: explicit commit_url → repo_full_name + sha → repo_url + sha → github source + service name.
+    const commitSha = meta?.commit;
+    const commitUrl = (() => {
+        if (!commitSha) return null;
+        if (meta?.commit_url) return meta.commit_url;
+        if (meta?.repo_full_name) return `https://github.com/${meta.repo_full_name}/commit/${commitSha}`;
+        if (meta?.repo_url) return `${meta.repo_url.replace(/\/$/, '')}/commit/${commitSha}`;
+        return null;
+    })();
+
+    const shortSha = commitSha ? String(commitSha).substring(0, 7) : null;
 
     return (
         <div className="flex gap-4">
@@ -76,14 +89,30 @@ export const EventCard = ({ event, riskAssessment, isLast, roleBadge = null, cau
                                     <h3 className="m-0 mb-3 text-lg font-medium text-text-primary group-hover/link:text-accent transition-colors">{summary}</h3>
                                 </Link>
                                 <div className="flex flex-wrap gap-4 text-sm text-text-muted border-t border-border pt-3 mt-1">
-                                    <div className="flex items-center gap-1.5 text-xs">
-                                        <User size={14} />
-                                        {meta.author}
-                                    </div>
-                                    <div className="flex items-center gap-1.5 font-mono text-xs bg-bg-tertiary px-1.5 rounded">
-                                        <GitCommit size={14} />
-                                        {meta.commit.substring(0, 7)}
-                                    </div>
+                                    {meta?.author && (
+                                        <div className="flex items-center gap-1.5 text-xs">
+                                            <User size={14} />
+                                            {meta.author}
+                                        </div>
+                                    )}
+                                    {shortSha && (
+                                        <div className="flex items-center gap-1.5 font-mono text-xs bg-bg-tertiary px-1.5 rounded">
+                                            <GitCommit size={14} />
+                                            {commitUrl ? (
+                                                <a
+                                                    href={commitUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="hover:text-accent transition-colors"
+                                                    onClick={e => e.stopPropagation()}
+                                                >
+                                                    {shortSha}
+                                                </a>
+                                            ) : (
+                                                shortSha
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
