@@ -65,7 +65,7 @@ const Rewind = () => {
     <div className="p-6 md:p-8 max-w-6xl mx-auto animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold mb-2 flex items-center gap-3 text-white">
+          <h1 className="text-4xl font-bold mb-2 flex items-center gap-3 text-white">
              <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
                 <History className="text-accent h-5 w-5" />
              </div>
@@ -94,7 +94,7 @@ const Rewind = () => {
               <button
                 type="button"
                 onClick={() => setIncidentTime(dayjs().utc().format("YYYY-MM-DDTHH:mm"))}
-                className="text-[10px] text-accent hover:text-accent-hover hover:underline transition-colors uppercase tracking-wider font-bold"
+                className="text-xs text-accent hover:text-accent-hover hover:underline transition-colors uppercase tracking-wider font-bold"
               >
                 Set to Now
               </button>

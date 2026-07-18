@@ -23,11 +23,11 @@ export const OverallRiskSummary = ({ assessment }) => {
 
     return (
         <div className={`p-6 rounded-xl border ${styles.borderColor} ${styles.bgColor}`}>
-            <div className="text-sm text-text-muted mb-2">Overall Incident Risk</div>
+            <div className="text-xs text-text-muted mb-2 uppercase font-semibold tracking-wide">Overall Incident Risk</div>
             <div className="flex items-center gap-4">
-                <div className={`text-6xl font-bold ${styles.color}`}>{score}</div>
+                <div className={`text-5xl font-bold ${styles.color}`}>{score}</div>
                 <div className="flex-1">
-                    <div className={`text-xl font-semibold capitalize ${styles.color}`}>{level}</div>
+                    <div className={`text-lg font-semibold capitalize ${styles.color}`}>{level}</div>
                     <p className="text-sm text-text-secondary mt-1">{explanation}</p>
                 </div>
             </div>

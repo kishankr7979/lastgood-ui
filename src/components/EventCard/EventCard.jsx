@@ -45,14 +45,14 @@ export const EventCard = ({ event, riskAssessment, isLast }) => {
                             {/* Left Column: Event Details */}
                             <div className="col-span-8">
                                 <div className="flex items-center gap-2 mb-3 text-sm text-text-secondary">
-                                    <span className="font-semibold uppercase tracking-wide text-accent">{service}</span>
+                                    <span className="font-semibold uppercase tracking-wide text-accent text-xs">{service}</span>
                                     <span className="bg-black/30 px-2 py-0.5 rounded text-xs border border-white/10">{environment}</span>
                                 </div>
                                 <Link to={`/events/${id}`} className="block group/link">
-                                    <h3 className="m-0 mb-3 text-xl font-medium text-text-primary group-hover/link:text-accent transition-colors">{summary}</h3>
+                                    <h3 className="m-0 mb-3 text-lg font-medium text-text-primary group-hover/link:text-accent transition-colors">{summary}</h3>
                                 </Link>
                                 <div className="flex flex-wrap gap-4 text-sm text-text-muted border-t border-border pt-3 mt-1">
-                                    <div className="flex items-center gap-1.5">
+                                    <div className="flex items-center gap-1.5 text-xs">
                                         <User size={14} />
                                         {meta.author}
                                     </div>
@@ -67,7 +67,7 @@ export const EventCard = ({ event, riskAssessment, isLast }) => {
                             <div className="col-span-4 text-right flex flex-col items-end justify-between">
                                 <div className="text-text-muted font-mono text-xs">
                                     {time_before_incident && (
-                                        <span className="text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20 block mb-1">
+                                        <span className="text-accent bg-accent/10 px-2 py-0.5 rounded border border-accent/20 block mb-1 text-xs">
                                             {time_before_incident}
                                         </span>
                                     )}

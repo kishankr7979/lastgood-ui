@@ -6,12 +6,12 @@ export const Recommendations = ({ recommendations }) => {
 
     return (
         <div className="bg-gradient-card border border-white/5 rounded-xl p-6">
-            <h3 className="text-lg font-semibold mb-4">Next Steps</h3>
+            <h3 className="text-xl font-semibold mb-4">Next Steps</h3>
             <ul className="space-y-3">
                 {recommendations.map((rec, index) => (
                     <li key={index} className="flex items-start gap-3">
                         <CheckSquare className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-                        <span className="text-text-secondary">{rec}</span>
+                        <span className="text-sm text-text-secondary">{rec}</span>
                     </li>
                 ))}
             </ul>

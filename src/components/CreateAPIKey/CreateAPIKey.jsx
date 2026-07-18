@@ -37,7 +37,7 @@ const CreateAPIKey = ({ onKeyCreated }) => {
         </h2>
       </div>
       <div className="p-6 space-y-6">
-        <p className="text-text-secondary">
+        <p className="text-text-secondary text-sm">
           No API key found. Create one to start collecting data.
         </p>
         <form onSubmit={handleCreateKey} className="space-y-4">

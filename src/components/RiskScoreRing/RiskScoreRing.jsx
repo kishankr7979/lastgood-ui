@@ -44,7 +44,7 @@ export const RiskScoreRing = ({ score, level, radius = 30, stroke = 4 }) => {
                 />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xl font-bold" style={{ color }}>{score}</span>
+                <span className="text-lg font-bold" style={{ color }}>{score}</span>
             </div>
         </div>
     );
