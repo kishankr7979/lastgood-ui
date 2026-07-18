@@ -20,7 +20,24 @@ const getRiskColor = (level) => {
     }
 };
 
-export const EventCard = ({ event, riskAssessment, isLast }) => {
+// Role badge styles and labels, keyed by the value returned by the API.
+const ROLE_BADGE_STYLES = {
+    primary: 'bg-red-500/20 border border-red-500/40 text-red-400',
+    contributing: 'bg-yellow-500/20 border border-yellow-500/40 text-yellow-400',
+};
+
+const ROLE_BADGE_LABELS = {
+    primary: 'PRIMARY TRIGGER',
+    contributing: 'CONTRIBUTING FACTOR',
+};
+
+const RoleBadge = ({ variant }) => (
+    <span className={`text-xs font-semibold uppercase px-2 py-0.5 rounded truncate ${ROLE_BADGE_STYLES[variant]}`}>
+        {ROLE_BADGE_LABELS[variant]}
+    </span>
+);
+
+export const EventCard = ({ event, riskAssessment, isLast, roleBadge = null, causalChainPosition = null }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { summary, occurred_at, meta, service, environment, id, time_before_incident } = event;
     const score = riskAssessment?.score;
@@ -33,7 +50,13 @@ export const EventCard = ({ event, riskAssessment, isLast }) => {
         <div className="flex gap-4">
             {/* Timeline Column */}
             <div className="flex flex-col items-center relative">
-                <div className="w-3 h-3 rounded-full bg-accent mt-6 shadow-[0_0_10px_rgba(45,212,191,0.5)] z-10"></div>
+                {causalChainPosition != null ? (
+                    <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-background mt-6 z-10 shadow-[0_0_10px_rgba(45,212,191,0.5)]">
+                        {causalChainPosition}
+                    </div>
+                ) : (
+                    <div className="w-3 h-3 rounded-full bg-accent mt-6 shadow-[0_0_10px_rgba(45,212,191,0.5)] z-10"></div>
+                )}
                 {!isLast && <div className="w-px bg-border flex-1 absolute top-9 bottom-0"></div>}
             </div>
 
@@ -44,7 +67,8 @@ export const EventCard = ({ event, riskAssessment, isLast }) => {
                         <div className="grid grid-cols-12 gap-4">
                             {/* Left Column: Event Details */}
                             <div className="col-span-8">
-                                <div className="flex items-center gap-2 mb-3 text-sm text-text-secondary">
+                                <div className="flex items-center gap-2 mb-3 text-sm text-text-secondary flex-wrap">
+                                    {roleBadge && <RoleBadge variant={roleBadge} />}
                                     <span className="font-semibold uppercase tracking-wide text-accent text-xs">{service}</span>
                                     <span className="bg-black/30 px-2 py-0.5 rounded text-xs border border-white/10">{environment}</span>
                                 </div>
