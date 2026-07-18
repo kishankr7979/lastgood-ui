@@ -66,10 +66,10 @@ const Rewind = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
           <h1 className="text-4xl font-bold mb-2 flex items-center gap-3 text-white">
-             <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
-                <History className="text-accent h-5 w-5" />
-             </div>
-             AI Diagnostics Rewind
+            <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
+              <History className="text-accent h-5 w-5" />
+            </div>
+            AI Diagnostics Rewind
           </h1>
           <p className="text-text-muted text-sm">
             Time-travel through infrastructure changes to identify the root cause of an incident.
@@ -81,7 +81,7 @@ const Rewind = () => {
       <div className="surface border border-accent/20 rounded-2xl p-6 mb-8 shadow-md relative overflow-hidden">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
         <div className="absolute -left-10 -top-10 w-32 h-32 bg-accent/5 rounded-full blur-2xl"></div>
-        
+
         <form
           onSubmit={handleSearch}
           className="flex flex-wrap items-end gap-4 relative z-10"
@@ -195,9 +195,13 @@ const Rewind = () => {
 
             {/* Right Column: Analysis & Recommendations */}
             <div className="lg:col-span-1 space-y-6">
-                            <OverallRiskSummary assessment={result.overall_assessment} />
+              <OverallRiskSummary assessment={result.overall_assessment} />
               <Recommendations recommendations={result.overall_assessment.recommendations} />
-              <Correlations correlations={result.correlations} />
+              <Correlations
+                correlations={result.correlations}
+                correlationStatus={result.correlation_status}
+                highestConfidence={result.highest_confidence}
+              />
             </div>
           </div>
         )}
