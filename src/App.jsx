@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Events from "./pages/Events";
 import Rewind from "./pages/Rewind";
@@ -11,8 +11,30 @@ import VerifyEmail from "./pages/VerifyEmail";
 import OAuthCallback from "./pages/OAuthCallback";
 import CompleteProfile from "./pages/CompleteProfile";
 import Services from "./pages/Services";
+import Sandbox from "./pages/Sandbox";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
+
+// Global Guard to lock down the app to Sandbox-only mode
+const GlobalGuard = ({ children }) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  
+  // Set flag in sessionStorage if query param is present so it persists across navigation
+  if (queryParams.get("forceAllow") === "true") {
+    sessionStorage.setItem("forceAllow", "true");
+  }
+
+  const isForceAllowed = sessionStorage.getItem("forceAllow") === "true";
+  const isSandboxRoute = location.pathname.startsWith('/sandbox');
+
+  // If not force allowed and not on the sandbox route, redirect to sandbox
+  if (!isForceAllowed && !isSandboxRoute) {
+    return <Navigate to="/sandbox" replace />;
+  }
+
+  return children;
+};
 
 // Simple Auth Guard
 const ProtectedRoute = ({ children }) => {
@@ -27,29 +49,34 @@ function App() {
   useHelpLoom()
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/auth/callback/:provider" element={<OAuthCallback />} />
-        <Route path="/signup/complete-profile" element={<CompleteProfile />} />
+      <GlobalGuard>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/auth/callback/:provider" element={<OAuthCallback />} />
+          <Route path="/signup/complete-profile" element={<CompleteProfile />} />
+          
+          {/* Unauthenticated Sandbox Route */}
+          <Route path="/sandbox" element={<Sandbox />} />
 
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <MainLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Navigate to="/rewind" replace />} />
-          <Route path="rewind" element={<Rewind />} />
-          <Route path="events" element={<Events />} />
-          <Route path="events/:id" element={<EventDetail />} />
-          <Route path="integrations" element={<Integrations />} />
-          <Route path="services" element={<Services />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
-      </Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="/rewind" replace />} />
+            <Route path="rewind" element={<Rewind />} />
+            <Route path="events" element={<Events />} />
+            <Route path="events/:id" element={<EventDetail />} />
+            <Route path="integrations" element={<Integrations />} />
+            <Route path="services" element={<Services />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        </Routes>
+      </GlobalGuard>
       <ToastContainer />
     </BrowserRouter>
   );
