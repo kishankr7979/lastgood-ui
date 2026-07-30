@@ -35,3 +35,18 @@ export const oauthSignup = async (details) => {
     const response = await api.post('/auth/oauth-signup', details);
     return response.data;
 }
+
+export const getServices = async () => {
+    const response = await api.get('/organizations/services');
+    return response.data.data;
+}
+
+export const createServiceApiKey = async (name, service) => {
+    const response = await api.post('/api-keys/create', { name, service });
+    return response.data.data;
+}
+
+export const sendTestEvent = async (service) => {
+    const response = await api.post('/change-events/test', { service });
+    return response.data.data;
+}

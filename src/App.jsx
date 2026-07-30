@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import VerifyEmail from "./pages/VerifyEmail";
 import OAuthCallback from "./pages/OAuthCallback";
 import CompleteProfile from "./pages/CompleteProfile";
+import Services from "./pages/Services";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
 
@@ -45,6 +46,7 @@ function App() {
           <Route path="events" element={<Events />} />
           <Route path="events/:id" element={<EventDetail />} />
           <Route path="integrations" element={<Integrations />} />
+          <Route path="services" element={<Services />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
