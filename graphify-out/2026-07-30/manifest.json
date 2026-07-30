@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1785397253.4925942,
-    "ast_hash": "3836c0ac33ac6e8eb260f48f8d2067e8",
+    "mtime": 1785396112.7317886,
+    "ast_hash": "c2524c9d58a896291a9ff2d9d1025c50",
     "semantic_hash": ""
   },
   "postcss.config.js": {
@@ -20,13 +20,13 @@
     "semantic_hash": ""
   },
   "src/App.jsx": {
-    "mtime": 1785397598.4266675,
-    "ast_hash": "3a40cae63c9e309c20a86df045230d95",
+    "mtime": 1785396203.2128925,
+    "ast_hash": "69db9f007965ab826f54db8a3b9285e1",
     "semantic_hash": ""
   },
   "src/api/index.js": {
-    "mtime": 1785397253.4949389,
-    "ast_hash": "4986175eac3320f24bc97e42c87ea00e",
+    "mtime": 1785396180.6834826,
+    "ast_hash": "1c389efc3712e9aadb5804fa26fc0402",
     "semantic_hash": ""
   },
   "src/components/Correlations/Correlations.jsx": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/main.jsx": {
-    "mtime": 1785397253.495493,
-    "ast_hash": "c22f5fa4c823b62eb9683dccaa96f13e",
+    "mtime": 1785396156.6336267,
+    "ast_hash": "b6d600417585849565fd96d5d443360f",
     "semantic_hash": ""
   },
   "src/pages/EventDetail.jsx": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "src/pages/Login.jsx": {
-    "mtime": 1785397619.780872,
-    "ast_hash": "7171bc0ed570dbac0a1ae6e61430b194",
+    "mtime": 1785396215.3875937,
+    "ast_hash": "b8b843b28f66aa65a557a6c932733bb0",
     "semantic_hash": ""
   },
   "src/pages/Rewind.jsx": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "src/service/auth.js": {
-    "mtime": 1785397571.7763443,
-    "ast_hash": "9380ce04750bcb152281d130d79acfde",
+    "mtime": 1785350225.8132772,
+    "ast_hash": "1a49e7387f80c4e51cf89d1ad597216f",
     "semantic_hash": ""
   },
   "src/service/organization.js": {
@@ -342,16 +342,6 @@
   "src/assets/react.svg": {
     "mtime": 1768731128.5348504,
     "ast_hash": "f0402b67b6ce880f65666bb49e841696",
-    "semantic_hash": ""
-  },
-  "src/pages/CompleteProfile.jsx": {
-    "mtime": 1785397587.9885397,
-    "ast_hash": "49e70dd0c3f98de588df34679e869432",
-    "semantic_hash": ""
-  },
-  "src/pages/OAuthCallback.jsx": {
-    "mtime": 1785397579.5341372,
-    "ast_hash": "70f16be6f49aa47e96cfc95b4ccae0bc",
     "semantic_hash": ""
   }
 }
