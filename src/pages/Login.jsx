@@ -10,10 +10,13 @@ import {
     AlertCircle,
     Activity,
     ArrowRight,
-    Clock
+    Clock,
+    Building2,
+    Globe,
+    UserCog
 } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
-import { loginUser, resetPassword } from '../service/auth';
+import { loginUser, resetPassword, signupUser } from '../service/auth';
 
 const timelineSteps = [
     {
@@ -61,6 +64,43 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
+    const [signupCreds, setSignupCreds] = useState({
+        email: '',
+        password: '',
+        org_name: '',
+        org_slug: '',
+        role: 'admin'
+    });
+    const [userEditedSlug, setUserEditedSlug] = useState(false);
+
+    const slugify = (text) => {
+        return text
+            .toString()
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    };
+
+    const handleOrgNameChange = (e) => {
+        const val = e.target.value;
+        setSignupCreds(prev => {
+            const next = { ...prev, org_name: val };
+            if (!userEditedSlug) {
+                next.org_slug = slugify(val);
+            }
+            return next;
+        });
+    };
+
+    const handleOrgSlugChange = (e) => {
+        const val = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        setUserEditedSlug(true);
+        setSignupCreds(prev => ({ ...prev, org_slug: val }));
+    };
+
     // Timeline interactive index state (defaults to completed healthy step)
     const [activeIndex, setActiveIndex] = useState(3);
 
@@ -75,6 +115,18 @@ const Login = () => {
     };
 
     // ---------------- LOGIN ----------------
+
+    // ---------------- SIGNUP ----------------
+    const { mutate: signup, isPending: signupLoading } = useMutation({
+        mutationFn: () => signupUser(signupCreds),
+        onSuccess: () => {
+            setStep('check-email');
+        },
+        onError: (err) => {
+            const errMsg = err.response?.data?.message || err.response?.data?.error || err.message || "Failed to create account";
+            setValidationError(errMsg);
+        }
+    });
 
     const { mutate: login, isPending: loginLoading, data } = useMutation({
         mutationFn: () => loginUser(creds.email, creds.password),
@@ -131,6 +183,41 @@ const Login = () => {
             return;
         }
         login();
+    };
+
+    const handleSignup = () => {
+        setValidationError('');
+        if (!signupCreds.org_name.trim()) {
+            setValidationError('Organization name is required.');
+            return;
+        }
+        if (!signupCreds.org_slug.trim()) {
+            setValidationError('Organization slug is required.');
+            return;
+        }
+        const slugRegex = /^[a-z0-9-]+$/;
+        if (!slugRegex.test(signupCreds.org_slug)) {
+            setValidationError('Organization slug must only contain lowercase letters, numbers, and hyphens.');
+            return;
+        }
+        if (!signupCreds.email.trim()) {
+            setValidationError('Email address is required.');
+            return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(signupCreds.email)) {
+            setValidationError('Please enter a valid email address.');
+            return;
+        }
+        if (!signupCreds.password) {
+            setValidationError('Password is required.');
+            return;
+        }
+        if (signupCreds.password.length < 6) {
+            setValidationError('Password must be at least 6 characters long.');
+            return;
+        }
+        signup();
     };
 
     const handleResetPassword = () => {
@@ -245,15 +332,17 @@ const Login = () => {
                         </div>
 
                         <h1 className="text-xl font-semibold tracking-tight text-white">
-                            {step === 'login'
-                                ? 'Sign in to LastGood'
-                                : 'Reset your password'}
+                            {step === 'login' && 'Sign in to LastGood'}
+                            {step === 'signup' && 'Create your account'}
+                            {step === 'check-email' && 'Verify your email'}
+                            {step === 'reset' && 'Reset your password'}
                         </h1>
 
                         <p className="text-text-muted text-xs leading-relaxed">
-                            {step === 'login'
-                                ? 'Access your dashboard and recover system states.'
-                                : 'Provide your new security credentials below.'}
+                            {step === 'login' && 'Access your dashboard and recover system states.'}
+                            {step === 'signup' && 'Get started with LastGood self-serve telemetry.'}
+                            {step === 'check-email' && `We've sent a magic verification link to your email.`}
+                            {step === 'reset' && 'Provide your new security credentials below.'}
                         </p>
                     </div>
 
@@ -325,6 +414,161 @@ const Login = () => {
                                         <ArrowRight size={13} className="ml-0.5" />
                                     </>
                                 )}
+                            </button>
+
+                            <div className="text-center pt-2">
+                                <button
+                                    onClick={() => {
+                                        setStep('signup');
+                                        setValidationError('');
+                                    }}
+                                    className="text-[11px] text-text-muted hover:text-white transition-colors"
+                                >
+                                    Don't have an account? Sign Up
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SIGNUP FORM */}
+                    {step === 'signup' && (
+                        <div className="space-y-4.5">
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-medium text-text-secondary">Organization Name</label>
+                                <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 focus-within:border-accent/50 focus-within:ring-1 focus-within:ring-accent/10 transition-all font-sans">
+                                    <Building2 size={15} className="text-text-muted shrink-0" />
+                                    <input
+                                        type="text"
+                                        value={signupCreds.org_name}
+                                        onChange={handleOrgNameChange}
+                                        className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted"
+                                        placeholder="Acme Corp"
+                                        disabled={signupLoading}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-medium text-text-secondary">Role</label>
+                                <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 focus-within:border-accent/50 focus-within:ring-1 focus-within:ring-accent/10 transition-all font-sans">
+                                    <UserCog size={15} className="text-text-muted shrink-0" />
+                                    <select
+                                        value={signupCreds.role}
+                                        onChange={(e) => setSignupCreds(prev => ({ ...prev, role: e.target.value }))}
+                                        className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted border-none p-0 cursor-pointer"
+                                        disabled={signupLoading}
+                                        style={{ colorScheme: 'dark' }}
+                                    >
+                                        <option value="admin" className="bg-[#030611] text-white">Admin</option>
+                                        <option value="developer" className="bg-[#030611] text-white">Developer</option>
+                                        <option value="viewer" className="bg-[#030611] text-white">Viewer</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-medium text-text-secondary">Email Address</label>
+                                <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 focus-within:border-accent/50 focus-within:ring-1 focus-within:ring-accent/10 transition-all font-sans">
+                                    <Mail size={15} className="text-text-muted shrink-0" />
+                                    <input
+                                        type="email"
+                                        value={signupCreds.email}
+                                        onChange={(e) => setSignupCreds(prev => ({ ...prev, email: e.target.value }))}
+                                        className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted"
+                                        placeholder="name@company.com"
+                                        disabled={signupLoading}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-[11px] font-medium text-text-secondary">Password</label>
+                                <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 focus-within:border-accent/50 focus-within:ring-1 focus-within:ring-accent/10 transition-all font-sans">
+                                    <Lock size={15} className="text-text-muted shrink-0" />
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={signupCreds.password}
+                                        onChange={(e) => setSignupCreds(prev => ({ ...prev, password: e.target.value }))}
+                                        className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted"
+                                        placeholder="••••••••"
+                                        disabled={signupLoading}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(v => !v)}
+                                        disabled={signupLoading}
+                                        className="text-text-muted hover:text-white transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {validationError && (
+                                <div className="bg-red-500/5 border border-red-500/10 text-red-400 text-xs p-3 rounded-lg flex items-center gap-2 animate-fade-in">
+                                    <AlertCircle size={14} className="shrink-0" />
+                                    <span>{validationError}</span>
+                                </div>
+                            )}
+
+                            <button
+                                onClick={handleSignup}
+                                disabled={signupLoading}
+                                className="w-full flex items-center justify-center gap-2 bg-gradient-accent py-2.5 rounded-lg text-xs font-semibold hover:opacity-95 disabled:opacity-50 transition-all active:scale-[0.985] text-white shadow-lg shadow-accent/10"
+                            >
+                                {signupLoading ? (
+                                    <>
+                                        <Loader2 className="animate-spin text-white" size={14} />
+                                        Creating Account...
+                                    </>
+                                ) : (
+                                    <>
+                                        Sign Up
+                                        <ArrowRight size={13} className="ml-0.5" />
+                                    </>
+                                )}
+                            </button>
+
+                            <div className="text-center pt-2">
+                                <button
+                                    onClick={() => {
+                                        setStep('login');
+                                        setValidationError('');
+                                    }}
+                                    className="text-[11px] text-text-muted hover:text-white transition-colors"
+                                >
+                                    Already have an account? Sign In
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* CHECK EMAIL SCREEN */}
+                    {step === 'check-email' && (
+                        <div className="space-y-6 text-center animate-fade-in">
+                            <div className="flex justify-center">
+                                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center border border-accent/20">
+                                    <Mail size={20} className="text-accent" />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <p className="text-xs text-text-secondary leading-relaxed">
+                                    We've sent a magic email verification link to <span className="font-semibold text-white">{signupCreds.email}</span>.
+                                </p>
+                                <p className="text-xs text-text-muted leading-relaxed">
+                                    Please click the link in the email to verify your address and log in to your dashboard.
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={() => {
+                                    setStep('login');
+                                    setValidationError('');
+                                }}
+                                className="w-full flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:border-white/20 py-2.5 rounded-lg text-xs font-semibold hover:bg-white/10 transition-all active:scale-[0.985] text-white"
+                            >
+                                Back to Sign In
                             </button>
                         </div>
                     )}
