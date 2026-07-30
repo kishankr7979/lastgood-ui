@@ -267,7 +267,7 @@ const Integrations = () => {
                   <span className="text-xs font-mono text-text-muted">cURL Template</span>
                 </div>
                 <button
-                  onClick={() => handleCopy('curl', `curl -X POST https://api.lastgood.space/v1/change-events \\
+                  onClick={() => handleCopy('curl', `curl -X POST https://api.lastgood.space/api/change-events \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{

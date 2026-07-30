@@ -7,6 +7,7 @@ import EventDetail from "./pages/EventDetail";
 import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
 import Login from "./pages/Login";
+import VerifyEmail from "./pages/VerifyEmail";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
 
@@ -25,6 +26,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
         <Route
           path="/"
