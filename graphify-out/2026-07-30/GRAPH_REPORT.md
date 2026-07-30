@@ -1,11 +1,11 @@
 # Graph Report - lastgood-ui  (2026-07-30)
 
 ## Corpus Check
-- 67 files · ~31,349 words
+- 65 files · ~28,640 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 320 nodes · 417 edges · 35 communities (29 shown, 6 thin omitted)
+- 316 nodes · 396 edges · 34 communities (28 shown, 6 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.57)
 - Token cost: 0 input · 0 output
 
@@ -27,7 +27,6 @@
 - package.json
 - EventCard.jsx
 - graphify reference: extra exports and benchmark
-- Components and Interfaces
 - graphify reference: query, path, explain
 - Implementation Plan: Correlation Timeline Enhancements
 - graphify reference: add a URL and watch a folder
@@ -60,19 +59,19 @@
   src/hooks/useEvents.js → src/hooks/useApiKeys.js
 - `useOrganization()` --indirect_call--> `getOrganization()`  [INFERRED]
   src/hooks/useOrganization.js → src/service/organization.js
-- `App()` --calls--> `useHelpLoom()`  [EXTRACTED]
-  src/App.jsx → src/hooks/useHelpLoom.js
-- `CreateAPIKey()` --calls--> `createAPIKey()`  [EXTRACTED]
-  src/components/CreateAPIKey/CreateAPIKey.jsx → src/service/api-key.js
+- `ProtectedRoute()` --calls--> `setTokenFetcher()`  [EXTRACTED]
+  src/App.jsx → src/api/index.js
+- `App()` --calls--> `setTokenFetcher()`  [EXTRACTED]
+  src/App.jsx → src/api/index.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (35 total, 6 thin omitted)
+## Communities (34 total, 6 thin omitted)
 
 ### Community 0 - "Correctness Properties"
-Cohesion: 0.06
-Nodes (30): Architecture, Correctness Properties, Correlation (existing shape, documented for reference), Correlation Timeline Enhancements, `correlations` absent / null, Data Models, Derived: CausalChainEntry (new, internal to Timeline), Derived: RoleBadgeVariant (new, internal) (+22 more)
+Cohesion: 0.05
+Nodes (38): Architecture, Components and Interfaces, Correctness Properties, Correlation (existing shape, documented for reference), Correlation Timeline Enhancements, `correlations` absent / null, Correlations.jsx — changes, Data Models (+30 more)
 
 ### Community 1 - "devDependencies"
 Cohesion: 0.07
@@ -80,11 +79,11 @@ Nodes (29): autoprefixer, eslint, @eslint/js, eslint-plugin-react-hooks, eslint-
 
 ### Community 2 - "dependencies"
 Cohesion: 0.07
-Nodes (27): axios, class-variance-authority, clsx, date-fns, dayjs, lucide-react, dependencies, axios (+19 more)
+Nodes (29): @auth0/auth0-react, axios, class-variance-authority, clsx, date-fns, dayjs, lucide-react, dependencies (+21 more)
 
 ### Community 3 - "App.jsx"
 Cohesion: 0.13
-Nodes (20): api, App(), toast, ToastContainer(), useHelpLoom(), queryClient, CompleteProfile(), EventDetail() (+12 more)
+Nodes (14): api, setTokenFetcher(), App(), ProtectedRoute(), toast, ToastContainer(), useHelpLoom(), queryClient (+6 more)
 
 ### Community 4 - "Settings.jsx"
 Cohesion: 0.18
@@ -118,10 +117,6 @@ Nodes (6): EventCard(), getRiskColor(), ROLE_BADGE_LABELS, ROLE_BADGE_STYLES, Ri
 Cohesion: 0.22
 Nodes (8): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7a - FalkorDB export (only if --falkordb or --falkordb-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
 
-### Community 12 - "Components and Interfaces"
-Cohesion: 0.25
-Nodes (8): Components and Interfaces, Correlations.jsx — changes, EventCard.jsx — changes, New derivation functions (module-level pure functions), Rewind.jsx — changes, RoleBadge sub-component (local to EventCard.jsx), Timeline.jsx — changes, Updated render loop
-
 ### Community 14 - "graphify reference: query, path, explain"
 Cohesion: 0.33
 Nodes (5): For /graphify explain, For /graphify path, graphify reference: query, path, explain, Step 0 — Constrained query expansion (REQUIRED before traversal), Step 1 — Traversal
@@ -147,24 +142,24 @@ Cohesion: 0.50
 Nodes (3): Expanding the ESLint configuration, React Compiler, React + Vite
 
 ## Knowledge Gaps
-- **128 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+123 more)
+- **129 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+124 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `package.json`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
-- **Why does `Design Document` connect `Correctness Properties` to `Components and Interfaces`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `devDependencies` connect `devDependencies` to `package.json`?**
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _128 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _129 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Correctness Properties` be split into smaller, more focused modules?**
-  _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.07407407407407407 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
+- **Should `App.jsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.1339031339031339 - nodes in this community are weakly interconnected._

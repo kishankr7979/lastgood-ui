@@ -20,3 +20,18 @@ export const verifyEmail = async (token) => {
     const response = await api.post('/verify-email', { token });
     return response.data.data;
 }
+
+export const googleOAuthCallback = async (code) => {
+    const response = await api.post('/auth/google/callback', { code });
+    return response.data;
+}
+
+export const githubOAuthCallback = async (code) => {
+    const response = await api.post('/auth/github/callback', { code });
+    return response.data;
+}
+
+export const oauthSignup = async (details) => {
+    const response = await api.post('/auth/oauth-signup', details);
+    return response.data;
+}

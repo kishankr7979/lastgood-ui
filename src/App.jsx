@@ -8,6 +8,8 @@ import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
 import Login from "./pages/Login";
 import VerifyEmail from "./pages/VerifyEmail";
+import OAuthCallback from "./pages/OAuthCallback";
+import CompleteProfile from "./pages/CompleteProfile";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
 
@@ -27,6 +29,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/auth/callback/:provider" element={<OAuthCallback />} />
+        <Route path="/signup/complete-profile" element={<CompleteProfile />} />
 
         <Route
           path="/"
