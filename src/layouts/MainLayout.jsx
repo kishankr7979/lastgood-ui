@@ -7,17 +7,15 @@ import {
   LogOut,
   History,
   Blocks,
-  Sparkles
+  Sparkles,
+  Server
 } from "lucide-react";
 import { useOrganization } from "../hooks/useOrganization";
 import LogoutConfirmationModal from "../components/LogoutConfirmationModal/LogoutConfirmationModal";
-import { useApiKeys } from "../hooks/useApiKeys";
-import { OnboardingModal } from "../components/OnboardingModal/OnboardingModal";
 
 const MainLayout = () => {
   const { data: org } = useOrganization();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const { hasApiKeys, refetch } = useApiKeys();
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -28,6 +26,7 @@ const MainLayout = () => {
     { path: "/rewind", label: "AI Incident Rewind", icon: Clock },
     { path: "/events", label: "Telemetry Feed", icon: List },
     { path: "/integrations", label: "Ingestion Channels", icon: Blocks },
+    { path: "/services", label: "Services & Keys", icon: Server },
     { path: "/settings", label: "Configuration", icon: Settings },
   ];
 
@@ -121,7 +120,7 @@ const MainLayout = () => {
       <main className="flex-1 ml-64 relative min-w-0 bg-transparent">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
         <div className="p-4">
-          {hasApiKeys ? <Outlet /> : <OnboardingModal onFinished={refetch} />}
+          <Outlet />
         </div>
       </main>
       
