@@ -25,6 +25,7 @@ import { toast } from '../components/ui/Toast';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useOrganization } from '../hooks/useOrganization';
+import { API_BASE_URL } from '../constants';
 
 dayjs.extend(relativeTime);
 
@@ -179,7 +180,7 @@ const Services = () => {
                         <button
                             onClick={() => {
                                 if (org?.id) {
-                                    window.location.href = `http://localhost:4000/api/integrations/github-app/install?orgId=${org.id}`;
+                                    window.location.href = `${API_BASE_URL}/api/integrations/github-app/install?orgId=${org.id}`;
                                 }
                             }}
                             className="flex items-center gap-2 bg-[#24292e] hover:bg-[#2f363d] px-4 py-2.5 rounded-lg text-xs font-semibold transition-all text-white shadow-lg border border-white/10"
