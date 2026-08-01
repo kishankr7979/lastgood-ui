@@ -14,7 +14,7 @@ import Services from "./pages/Services";
 import Sandbox from "./pages/Sandbox";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
-import { isIframe } from "./util";
+import { isIframe, isDevelopment } from "./util";
 
 // Global Guard to lock down the app to Sandbox-only mode
 const GlobalGuard = ({ children }) => {
@@ -26,7 +26,7 @@ const GlobalGuard = ({ children }) => {
     sessionStorage.setItem("forceAllow", "true");
   }
 
-  const isForceAllowed = sessionStorage.getItem("forceAllow") === "true";
+  const isForceAllowed = sessionStorage.getItem("forceAllow") === "true" || isDevelopment;
   const isSandboxRoute = location.pathname.startsWith('/sandbox');
 
   // If not force allowed and not on the sandbox route, redirect to sandbox

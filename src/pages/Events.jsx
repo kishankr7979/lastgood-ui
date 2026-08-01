@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { useEvents } from '../hooks/useEvents';
 import { Timeline } from '../components/Timeline/Timeline';
-import { Activity, ShieldCheck, AlertTriangle, List, Loader2, Info, Filter } from 'lucide-react';
+import { List, Loader2, Info } from 'lucide-react';
 import { DateRangeFilter } from '../components/EventFilters/DateRangeFilter';
 import { SearchBar, MultiSelectFilter, SimpleSelectFilter } from '../components/EventFilters/FilterComponents';
-import { SimpleBarChart, SimpleLineChart, StatsCard } from '../components/EventFilters/ChartComponents';
+
 import dayjs from 'dayjs';
 
 const Events = () => {
@@ -101,108 +101,59 @@ const Events = () => {
     }, [filteredEvents]);
 
     return (
-        <div className="p-6 md:p-8 max-w-[1400px] mx-auto animate-fade-in">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <div>
-                    <h1 className="text-4xl font-bold mb-1 text-white">Dashboard</h1>
-                    <p className="text-text-muted text-sm">Monitor infrastructure configurations and code deployments.</p>
-                </div>
-                <div className="flex items-center gap-3 surface px-3 py-1.5 rounded-lg shadow-sm border border-accent/20">
-                    <span className="flex h-3 w-3 relative">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-status-success opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-status-success"></span>
-                    </span>
-                    <span className="text-xs font-bold text-status-success tracking-wide uppercase">Operational</span>
-                </div>
-            </div>
-
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 flex-wrap animate-slide-up">
-                <StatsCard label="Total Events" value={filteredEvents.length} icon={Activity} color="accent" />
-                <StatsCard label="Security Posture" value="98 / 100" icon={ShieldCheck} color="success" />
-                <StatsCard label="Active Alerts" value="0" icon={AlertTriangle} color="warning" />
-            </div>
-
-            {/* Filters Section */}
-            <div className="bg-black/30 border border-white/5 rounded-xl p-4 mb-8 animate-slide-up">
-                <div className="flex items-center gap-2 mb-4">
-                    <Filter size={16} className="text-accent" />
-                    <h2 className="text-sm font-semibold text-white uppercase tracking-wide">Filters & Search</h2>
+        <div className="flex flex-col h-full max-w-[1400px] w-full mx-auto p-6 animate-fade-in">
+            {/* Sticky Header & Filters */}
+            <div className="flex-shrink-0 space-y-4 mb-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold mb-1 text-white">Events Feed</h1>
+                        <p className="text-text-muted text-sm">Monitor configuration changes and deployments.</p>
+                    </div>
                 </div>
 
-                <div className="space-y-3">
-                    {/* Search Bar */}
-                    <SearchBar
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                        placeholder="Search by commit, author, service, or summary..."
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="w-64">
+                        <SearchBar
+                            value={searchQuery}
+                            onChange={setSearchQuery}
+                            placeholder="Search commits, services..."
+                        />
+                    </div>
+                    <DateRangeFilter
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        onFromDateChange={setFromDate}
+                        onToDateChange={setToDate}
+                        onClear={() => { setFromDate(''); setToDate(''); }}
                     />
-
-                    {/* Filters Row */}
-                    <div className="flex flex-wrap gap-2 items-center">
-                        <DateRangeFilter
-                            fromDate={fromDate}
-                            toDate={toDate}
-                            onFromDateChange={setFromDate}
-                            onToDateChange={setToDate}
-                            onClear={() => { setFromDate(''); setToDate(''); }}
-                        />
-                    </div>
-
-                    {/* Service & Environment Filters */}
-                    <div className="flex flex-wrap gap-2 items-center">
-                        <MultiSelectFilter
-                            label="Service"
-                            options={uniqueServices}
-                            selected={selectedServices}
-                            onChange={setSelectedServices}
-                            placeholder="Select services..."
-                        />
-                        <MultiSelectFilter
-                            label="Environment"
-                            options={uniqueEnvironments}
-                            selected={selectedEnvironments}
-                            onChange={setSelectedEnvironments}
-                            placeholder="Select environments..."
-                        />
-
-                        {/* Active Filters Summary */}
-                        {(searchQuery || fromDate || toDate || selectedServices.length > 0 || selectedEnvironments.length > 0) && (
-                            <div className="text-xs text-text-muted ml-auto">
-                                Showing {filteredEvents.length} of {events?.length || 0} events
-                            </div>
-                        )}
-                    </div>
+                    <MultiSelectFilter
+                        label="Service"
+                        options={uniqueServices}
+                        selected={selectedServices}
+                        onChange={setSelectedServices}
+                        placeholder="All Services"
+                    />
+                    <MultiSelectFilter
+                        label="Env"
+                        options={uniqueEnvironments}
+                        selected={selectedEnvironments}
+                        onChange={setSelectedEnvironments}
+                        placeholder="All Envs"
+                    />
+                    
+                    {(searchQuery || fromDate || toDate || selectedServices.length > 0 || selectedEnvironments.length > 0) && (
+                        <div className="text-xs text-text-muted ml-auto">
+                            {filteredEvents.length} results
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Analytics Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8 animate-slide-up">
-                <SimpleBarChart
-                    data={analytics.byService.slice(0, 5)}
-                    title="Top Services"
-                    height="h-48"
-                />
-                <SimpleBarChart
-                    data={analytics.byEnvironment}
-                    title="Events by Environment"
-                    height="h-48"
-                />
-                <SimpleLineChart
-                    data={analytics.byHour.slice(-8)}
-                    title="Events Timeline (Last 8h)"
-                    height="h-48"
-                />
-            </div>
+            {/* Scrollable Timeline Section */}
+            <div className="flex-1 overflow-y-auto bg-black/20 border border-white/5 rounded-2xl p-6 relative">
 
-            {/* Timeline Section */}
-            <div className="bg-black/30 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-xl animate-slide-up relative overflow-hidden">
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <List size={16} className="text-accent" />
-                    </div>
-                    Recent Activity
+                <h2 className="text-lg font-semibold text-white mb-6 sticky top-0 bg-[#090d16] py-2 z-10 -mt-2 -mx-2 px-2 shadow-[0_10px_20px_-10px_#090d16]">
+                    Timeline
                 </h2>
                 <Timeline events={filteredEvents} isLoading={isLoading || !data} error={error} />
 

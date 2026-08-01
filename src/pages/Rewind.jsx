@@ -62,23 +62,25 @@ const Rewind = () => {
   });
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl mx-auto animate-fade-in">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div>
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-3 text-white">
-            <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
-              <History className="text-accent h-5 w-5" />
-            </div>
-            AI Diagnostics Rewind
-          </h1>
-          <p className="text-text-muted text-sm">
-            Time-travel through infrastructure changes to identify the root cause of an incident.
-          </p>
+    <div className="flex flex-col h-full max-w-6xl w-full mx-auto p-6 md:p-8 animate-fade-in">
+      {/* Fixed Header & Controls */}
+      <div className="flex-shrink-0">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 flex items-center gap-3 text-white">
+              <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
+                <History className="text-accent h-5 w-5" />
+              </div>
+              AI Diagnostics Rewind
+            </h1>
+            <p className="text-text-muted text-sm">
+              Time-travel through infrastructure changes to identify the root cause of an incident.
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Controls */}
-      <div className="surface border border-accent/20 rounded-2xl p-6 mb-8 shadow-md relative overflow-hidden">
+        {/* Controls */}
+        <div className="surface border border-accent/20 rounded-2xl p-6 mb-6 shadow-md relative overflow-hidden">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
         <div className="absolute -left-10 -top-10 w-32 h-32 bg-accent/5 rounded-full blur-2xl"></div>
 
@@ -163,8 +165,10 @@ const Rewind = () => {
         </form>
       </div>
 
+      </div>
+
       {/* Results */}
-      <div className="space-y-6">
+      <div className="flex-1 overflow-y-auto space-y-6 pr-2">
         {isLoading && <LoadingState message="Analyzing timeline..." />}
 
         {error && (

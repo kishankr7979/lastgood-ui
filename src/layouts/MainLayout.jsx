@@ -7,8 +7,8 @@ import {
   LogOut,
   History,
   Blocks,
-  Sparkles,
-  Server
+  Server,
+  UserCircle
 } from "lucide-react";
 import { useOrganization } from "../hooks/useOrganization";
 import LogoutConfirmationModal from "../components/LogoutConfirmationModal/LogoutConfirmationModal";
@@ -23,11 +23,11 @@ const MainLayout = () => {
   };
 
   const navItems = [
-    { path: "/rewind", label: "AI Incident Rewind", icon: Clock },
-    { path: "/events", label: "Telemetry Feed", icon: List },
-    { path: "/integrations", label: "Ingestion Channels", icon: Blocks },
-    { path: "/services", label: "Services & Keys", icon: Server },
-    { path: "/settings", label: "Configuration", icon: Settings },
+    { path: "/rewind", label: "Rewind", icon: Clock },
+    { path: "/events", label: "Events", icon: List },
+    { path: "/integrations", label: "Integrations", icon: Blocks },
+    { path: "/services", label: "Services", icon: Server },
+    { path: "/settings", label: "Project Profile", icon: UserCircle },
   ];
 
   return (
@@ -46,25 +46,15 @@ const MainLayout = () => {
           </div>
         </div>
 
-        {/* AI Agent Status Badge */}
-        <div className="px-4 py-2.5 border-b border-white/[0.05] mb-2 bg-black/10">
-          <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-accent/20 bg-accent/5 shadow-[0_0_15px_rgba(45,212,191,0.05)]">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-            </span>
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold text-white tracking-wide uppercase leading-none flex items-center gap-1">
-                Diagnostic AI
-                <Sparkles size={8} className="text-accent fill-accent/45 animate-pulse" />
-              </span>
-              <span className="text-[9px] text-accent font-semibold mt-0.5 leading-none">Agent Online</span>
-            </div>
+        <div className="px-4 py-2 border-b border-white/[0.05] mb-2">
+          <div className="flex items-center gap-2 px-2 py-1.5 rounded-md border border-white/5 bg-white/5">
+            <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            <span className="text-[10px] font-medium text-text-secondary">Workspace Online</span>
           </div>
         </div>
 
         <div className="px-4 py-1">
-           <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 mt-2 ml-2">AI Diagnostic Suite</span>
+           <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 mt-2 ml-2">Menu</span>
         </div>
 
         <nav className="flex-1 px-3 space-y-1">
@@ -75,16 +65,16 @@ const MainLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all group relative overflow-hidden ${
+                  `flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors group ${
                     isActive
-                      ? "bg-accent/10 border border-accent/20 text-accent shadow-[0_0_15px_rgba(45,212,191,0.05)]"
-                      : "text-text-secondary hover:text-white hover:bg-white/5 border border-transparent"
+                      ? "bg-white/10 text-white"
+                      : "text-text-secondary hover:text-white hover:bg-white/5"
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon size={16} className={isActive ? "text-accent" : "text-text-muted group-hover:text-white"} />
+                    <Icon size={16} className={isActive ? "text-white" : "text-text-muted group-hover:text-white"} />
                     <span className="relative z-10">{item.label}</span>
                   </>
                 )}
@@ -117,9 +107,9 @@ const MainLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 relative min-w-0 bg-transparent">
+      <main className="flex-1 ml-64 relative min-w-0 bg-transparent h-screen flex flex-col overflow-hidden">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-        <div className="p-4">
+        <div className="flex-1 overflow-hidden flex flex-col">
           <Outlet />
         </div>
       </main>

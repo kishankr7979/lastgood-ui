@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import useOrgStore from "../stores/useOrgStore";
 import { getAPIKeyByOrg } from "../service/api-key";
+import { getIntegrationByProvider } from "../service/auth";
 import { contactCS } from "../util";
 
 const Integrations = () => {
@@ -25,6 +26,12 @@ const Integrations = () => {
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [copiedStates, setCopiedStates] = useState({});
   const [showSecret, setShowSecret] = useState(false);
+
+  const { data: githubIntegration } = useQuery({
+    queryKey: ["integration", "github", org?.id],
+    queryFn: () => getIntegrationByProvider("github"),
+    enabled: !!org?.id,
+  });
 
   const { data: apiKeys = [] } = useQuery({
     queryKey: ["apiKeys", org?.id],
@@ -48,13 +55,15 @@ const Integrations = () => {
     });
   };
 
+  const isGithubActive = githubIntegration?.status === "active";
+
   const channels = [
     {
       id: "github",
       title: "GitHub Webhooks",
       description: "Ingest code changes, pull requests, releases, and workflow pipeline runs automatically.",
       icon: Github,
-      status: "Recommended",
+      status: isGithubActive ? "Connected" : "Recommended",
       active: true,
       category: "Code Repositories",
     },
@@ -342,7 +351,7 @@ const Integrations = () => {
                   <div className={`p-2.5 rounded-xl border ${channel.active ? "bg-accent/10 border-accent/20 text-accent" : "bg-white/5 border-white/5 text-zinc-500"}`}>
                     <Icon size={20} />
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${channel.status === "Recommended"
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${channel.status === "Recommended" || channel.status === "Connected"
                     ? "bg-status-success/15 border-status-success/20 text-status-success"
                     : channel.status === "Active"
                       ? "bg-accent/15 border-accent/20 text-accent"

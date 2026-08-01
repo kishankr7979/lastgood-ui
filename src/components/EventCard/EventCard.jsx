@@ -43,7 +43,7 @@ export const EventCard = ({ event, riskAssessment, isLast, roleBadge = null, cau
     const score = riskAssessment?.score;
     const level = riskAssessment?.level;
 
-    const date = dayjs(occurred_at).utc().format('MMM DD, h:mm A');
+    const date = dayjs(occurred_at).utc().format('MMM DD, h:mm A [UTC]');
     const riskColor = getRiskColor(level);
 
     // Build a commit URL when we have enough information.
