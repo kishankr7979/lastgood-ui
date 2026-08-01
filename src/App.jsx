@@ -14,12 +14,13 @@ import Services from "./pages/Services";
 import Sandbox from "./pages/Sandbox";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
+import { isIframe } from "./util";
 
 // Global Guard to lock down the app to Sandbox-only mode
 const GlobalGuard = ({ children }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  
+
   // Set flag in sessionStorage if query param is present so it persists across navigation
   if (queryParams.get("forceAllow") === "true") {
     sessionStorage.setItem("forceAllow", "true");
@@ -46,7 +47,10 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  useHelpLoom()
+
+  if (!isIframe) {
+    useHelpLoom()
+  }
   return (
     <BrowserRouter>
       <GlobalGuard>
@@ -55,7 +59,7 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/auth/callback/:provider" element={<OAuthCallback />} />
           <Route path="/signup/complete-profile" element={<CompleteProfile />} />
-          
+
           {/* Unauthenticated Sandbox Route */}
           <Route path="/sandbox" element={<Sandbox />} />
 

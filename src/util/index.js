@@ -10,3 +10,5 @@ const contactCS = () => {
 export {
     contactCS
 }
+
+export const isIframe = () => globalThis.top !== globalThis.self
