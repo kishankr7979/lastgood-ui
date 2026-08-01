@@ -23,10 +23,10 @@ const GlobalGuard = ({ children }) => {
 
   // Set flag in sessionStorage if query param is present so it persists across navigation
   if (queryParams.get("forceAllow") === "true") {
-    sessionStorage.setItem("forceAllow", "true");
+    localStorage.setItem("forceAllow", "true");
   }
 
-  const isForceAllowed = sessionStorage.getItem("forceAllow") === "true" || isDevelopment;
+  const isForceAllowed = localStorage.getItem("forceAllow") === "true" || isDevelopment;
   const isSandboxRoute = location.pathname.startsWith('/sandbox');
 
   // If not force allowed and not on the sandbox route, redirect to sandbox
