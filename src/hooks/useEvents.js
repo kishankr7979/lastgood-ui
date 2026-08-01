@@ -1,6 +1,5 @@
 import api from '../api';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useApiKeys } from './useApiKeys';
 
 const fetchEvents = async ({ pageParam = 0 }) => {
     try {
@@ -19,8 +18,6 @@ const fetchEvents = async ({ pageParam = 0 }) => {
 };
 
 export const useEvents = () => {
-    const { hasApiKeys } = useApiKeys();
-
     return useInfiniteQuery({
         queryKey: ['events'],
         queryFn: fetchEvents,
@@ -34,6 +31,5 @@ export const useEvents = () => {
             
             return nextOffset < total ? nextOffset : undefined;
         },
-        enabled: hasApiKeys,
     });
 };
