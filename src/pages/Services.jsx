@@ -163,7 +163,7 @@ const Services = () => {
                         <button
                             onClick={() => {
                                 if (org?.id) {
-                                    window.location.href = `http://localhost:4000/api/integrations/github-app/install?orgId=${org.id}`;
+                                    window.location.href = `${API_BASE_URL}/api/integrations/github-app/install?orgId=${org.id}`;
                                 }
                             }}
                             className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all text-emerald-400 shadow-sm"
