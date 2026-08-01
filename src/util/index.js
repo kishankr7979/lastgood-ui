@@ -12,3 +12,5 @@ export {
 }
 
 export const isIframe = () => globalThis.top !== globalThis.self
+
+export const isDevelopment = globalThis.origin.includes('localhost') 

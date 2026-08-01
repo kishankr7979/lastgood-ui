@@ -16,17 +16,21 @@ import {
     X,
     Code,
     Terminal,
-    Play
+    Play,
+    Trash2,
+    Github
 } from 'lucide-react';
-import { getServices, createServiceApiKey, sendTestEvent } from '../service/auth';
+import { getServices, createServiceApiKey, sendTestEvent, deleteService, getIntegrationByProvider } from '../service/auth';
 import { toast } from '../components/ui/Toast';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useOrganization } from '../hooks/useOrganization';
 
 dayjs.extend(relativeTime);
 
 const Services = () => {
     const queryClient = useQueryClient();
+    const { data: org } = useOrganization();
     const [copiedKeyId, setCopiedKeyId] = useState(null);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [integrationService, setIntegrationService] = useState(null);
@@ -34,6 +38,15 @@ const Services = () => {
     const [newService, setNewService] = useState({ name: '', keyName: '' });
     const [generatedKey, setGeneratedKey] = useState(null);
     const [copiedNewKey, setCopiedNewKey] = useState(false);
+    const [serviceToDelete, setServiceToDelete] = useState(null);
+
+    // Fetch GitHub Integration Status
+    const { data: githubIntegration } = useQuery({
+        queryKey: ['integration', 'github', org?.id],
+        queryFn: () => getIntegrationByProvider('github'),
+        enabled: !!org?.id,
+        refetchOnWindowFocus: false
+    });
 
     // Fetch Services List
     const { data: services = [], isLoading, refetch, isFetching } = useQuery({
@@ -56,6 +69,21 @@ const Services = () => {
         onError: (err) => {
             const errMsg = err.response?.data?.message || err.response?.data?.error || err.message || 'Failed to generate key';
             toast.error(errMsg);
+        }
+    });
+
+    // Delete Service Mutation
+    const { mutate: handleDeleteService, isPending: deletingService } = useMutation({
+        mutationFn: (serviceId) => deleteService(serviceId),
+        onSuccess: () => {
+            toast.success('Service and associated events deleted successfully!');
+            queryClient.invalidateQueries(['services']);
+            setServiceToDelete(null);
+        },
+        onError: (err) => {
+            const errMsg = err.response?.data?.message || err.response?.data?.error || err.message || 'Failed to delete service';
+            toast.error(errMsg);
+            setServiceToDelete(null);
         }
     });
 
@@ -108,7 +136,7 @@ const Services = () => {
 
     return (
         <div className="space-y-8 max-w-6xl mx-auto p-4 sm:p-6 text-text-primary">
-            
+
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-6">
                 <div>
@@ -130,9 +158,39 @@ const Services = () => {
                     >
                         <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
                     </button>
+                    {githubIntegration?.status === 'active' ? (
+                        <button
+                            onClick={() => {
+                                if (org?.id) {
+                                    window.location.href = `http://localhost:4000/api/integrations/github-app/install?orgId=${org.id}`;
+                                }
+                            }}
+                            className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all text-emerald-400 shadow-sm"
+                            title="GitHub App is connected. Click to manage or re-authorize repositories."
+                        >
+                            <span className="flex h-2 w-2 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <Github size={14} />
+                            <span>GitHub Connected</span>
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => {
+                                if (org?.id) {
+                                    window.location.href = `http://localhost:4000/api/integrations/github-app/install?orgId=${org.id}`;
+                                }
+                            }}
+                            className="flex items-center gap-2 bg-[#24292e] hover:bg-[#2f363d] px-4 py-2.5 rounded-lg text-xs font-semibold transition-all text-white shadow-lg border border-white/10"
+                        >
+                            <Github size={14} />
+                            Connect GitHub
+                        </button>
+                    )}
                     <button
                         onClick={() => setIsCreateOpen(true)}
-                        className="flex items-center gap-2 bg-gradient-accent px-4 py-2.5 rounded-lg text-xs font-semibold hover:opacity-90 transition-all text-white shadow-lg shadow-accent/15"
+                        className="flex items-center gap-2 bg-gradient-accent px-4 py-2.5 rounded-lg text-xs font-semibold hover:opacity-90 transition-all text-black shadow-lg shadow-accent/15"
                     >
                         <Plus size={14} />
                         Connect Service
@@ -153,36 +211,6 @@ const Services = () => {
                 </div>
             )}
 
-            {/* Quick Overview Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-[#0b0f19]/40 border border-white/5 p-5 rounded-xl space-y-2 relative overflow-hidden backdrop-blur-md">
-                    <div className="text-[10px] uppercase tracking-wider text-text-muted font-mono">Active Ingestors</div>
-                    <div className="text-2xl font-bold text-white flex items-baseline gap-1">
-                        {distinctServicesCount}
-                        <span className="text-xs font-light text-text-muted">/ 2</span>
-                    </div>
-                    <div className="text-[10px] text-emerald-400 flex items-center gap-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Awaiting signals
-                    </div>
-                </div>
-
-                <div className="bg-[#0b0f19]/40 border border-white/5 p-5 rounded-xl space-y-2 relative overflow-hidden backdrop-blur-md">
-                    <div className="text-[10px] uppercase tracking-wider text-text-muted font-mono">Keys Provisioned</div>
-                    <div className="text-2xl font-bold text-white">
-                        {services.filter(s => s.apiKeyId).length}
-                    </div>
-                    <div className="text-[10px] text-text-secondary">Dedicated access tokens</div>
-                </div>
-
-                <div className="bg-[#0b0f19]/40 border border-white/5 p-5 rounded-xl space-y-2 relative overflow-hidden backdrop-blur-md">
-                    <div className="text-[10px] uppercase tracking-wider text-text-muted font-mono">Total Ingested Events</div>
-                    <div className="text-2xl font-bold text-white">
-                        {services.reduce((acc, s) => acc + s.eventCount, 0)}
-                    </div>
-                    <div className="text-[10px] text-text-secondary">Across all environments</div>
-                </div>
-            </div>
 
             {/* Loading state */}
             {isLoading ? (
@@ -226,13 +254,21 @@ const Services = () => {
                                             </span>
                                             <span className="text-sm font-semibold text-white">{service.name}</span>
                                         </div>
-                                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md border ${
-                                            service.status === 'active'
+                                        <div className="flex items-center gap-3">
+                                            <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md border ${service.status === 'active'
                                                 ? 'border-emerald-500/20 bg-emerald-950/20 text-emerald-400'
                                                 : 'border-amber-500/20 bg-amber-950/20 text-amber-400'
-                                        }`}>
-                                            {service.status === 'active' ? 'Active Ingest' : 'Pending Signal'}
-                                        </span>
+                                                }`}>
+                                                {service.status === 'active' ? 'Active Ingest' : 'Pending Signal'}
+                                            </span>
+                                            <button
+                                                onClick={() => setServiceToDelete(service)}
+                                                className="text-text-muted hover:text-red-400 transition-colors p-1"
+                                                title="Delete Service"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {/* Stats Grid */}
@@ -270,8 +306,8 @@ const Services = () => {
                                                     Dedicated API Key:
                                                 </span>
                                                 <span>
-                                                    {service.apiKeyLastUsed 
-                                                        ? `Last used ${dayjs(service.apiKeyLastUsed).fromNow()}` 
+                                                    {service.apiKeyLastUsed
+                                                        ? `Last used ${dayjs(service.apiKeyLastUsed).fromNow()}`
                                                         : 'Never used'}
                                                 </span>
                                             </div>
@@ -327,8 +363,8 @@ const Services = () => {
             {isCreateOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     {/* Backdrop */}
-                    <div 
-                        className="absolute inset-0 bg-black/70 backdrop-blur-sm" 
+                    <div
+                        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
                         onClick={handleCloseModal}
                     />
 
@@ -339,7 +375,7 @@ const Services = () => {
                                 <Shield className="text-accent" size={16} />
                                 Connect New Service
                             </h3>
-                            <button 
+                            <button
                                 onClick={handleCloseModal}
                                 className="text-text-muted hover:text-white transition-colors"
                             >
@@ -394,9 +430,9 @@ const Services = () => {
                                         <input
                                             type="text"
                                             value={newService.name}
-                                            onChange={(e) => setNewService(prev => ({ 
-                                                ...prev, 
-                                                name: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') 
+                                            onChange={(e) => setNewService(prev => ({
+                                                ...prev,
+                                                name: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')
                                             }))}
                                             className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20"
                                             placeholder="e.g. backend-api"
@@ -451,8 +487,8 @@ const Services = () => {
             {integrationService && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     {/* Backdrop */}
-                    <div 
-                        className="absolute inset-0 bg-black/70 backdrop-blur-sm" 
+                    <div
+                        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
                         onClick={() => setIntegrationService(null)}
                     />
 
@@ -468,7 +504,7 @@ const Services = () => {
                                     Push change events to this service using its dedicated API key.
                                 </p>
                             </div>
-                            <button 
+                            <button
                                 onClick={() => setIntegrationService(null)}
                                 className="text-text-muted hover:text-white transition-colors"
                             >
@@ -485,7 +521,7 @@ const Services = () => {
                                 </h4>
                                 <div className="bg-black/60 border border-white/10 rounded-xl p-4 overflow-x-auto relative group">
                                     <pre className="text-[11px] text-emerald-400/90 font-mono leading-relaxed">
-{`curl -X POST https://api.lastgood.space/change-events \\
+                                        {`curl -X POST https://api.lastgood.space/change-events \\
   -H "Authorization: Bearer YOUR_API_KEY_HERE" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -512,7 +548,7 @@ const Services = () => {
                                 </h4>
                                 <div className="bg-black/60 border border-white/10 rounded-xl p-4 overflow-x-auto relative group">
                                     <pre className="text-[11px] text-blue-400/90 font-mono leading-relaxed">
-{`name: Notify LastGood
+                                        {`name: Notify LastGood
 
 on:
   push:
@@ -567,6 +603,51 @@ jobs:
                                     {sendingTest ? 'Sending...' : 'Send Test Event'}
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* DELETE CONFIRMATION MODAL */}
+            {serviceToDelete && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-gradient-card border border-white/10 rounded-xl shadow-lg p-8 max-w-md w-full relative">
+                        <button
+                            onClick={() => !deletingService && setServiceToDelete(null)}
+                            className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors disabled:opacity-50"
+                            disabled={deletingService}
+                        >
+                            <X size={20} />
+                        </button>
+                        <h2 className="text-xl font-bold mb-3 text-white flex items-center gap-2">
+                            <Trash2 size={20} className="text-status-error" />
+                            Confirm Deletion
+                        </h2>
+                        <p className="text-sm text-text-secondary mb-8 leading-relaxed">
+                            Are you sure you want to delete the service <strong className="text-white">"{serviceToDelete.name}"</strong> and ALL of its associated events? This action cannot be undone.
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setServiceToDelete(null)}
+                                disabled={deletingService}
+                                className="px-4 py-2 bg-bg-tertiary hover:bg-bg-primary border border-white/10 hover:border-white/20 rounded-lg text-text-primary text-sm font-medium transition-colors disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleDeleteService(serviceToDelete.service_id)}
+                                disabled={deletingService}
+                                className="flex items-center justify-center min-w-[100px] gap-2 px-4 py-2 bg-status-error/20 hover:bg-status-error/30 border border-status-error/30 rounded-lg text-status-error text-sm font-medium transition-colors disabled:opacity-50"
+                            >
+                                {deletingService ? (
+                                    <Loader2 size={16} className="animate-spin" />
+                                ) : (
+                                    <>
+                                        <Trash2 size={16} />
+                                        Delete
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>

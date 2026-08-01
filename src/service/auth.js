@@ -41,6 +41,20 @@ export const getServices = async () => {
     return response.data.data;
 }
 
+export const deleteService = async (serviceId) => {
+    const response = await api.delete(`/organizations/services/${serviceId}`);
+    return response.data;
+}
+
+export const getIntegrationByProvider = async (provider) => {
+    try {
+        const response = await api.get(`/integrations/${provider}`);
+        return response.data.data;
+    } catch (err) {
+        return null;
+    }
+};
+
 export const createServiceApiKey = async (name, service) => {
     const response = await api.post('/api-keys/create', { name, service });
     return response.data.data;
