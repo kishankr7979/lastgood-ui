@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Calendar, Clock, AlertCircle, History } from "lucide-react";
+import { Search, Calendar, Clock, AlertCircle, History, Sparkles } from "lucide-react";
 import api from "../api";
-import { Timeline } from "../components/Timeline/Timeline";
-import { OverallRiskSummary } from '../components/OverallRiskSummary/OverallRiskSummary';
-import { Recommendations } from '../components/Recommendations/Recommendations';
-import { Correlations } from '../components/Correlations/Correlations';
+import RewindTimeline from "../components/Rewind/RewindTimeline";
+import RewindAiDiagnosisPanel from "../components/Rewind/RewindAiDiagnosisPanel";
 import { LoadingState } from "../components/LoadingState/LoadingState";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const Rewind = () => {
   // Default to "now" formatted for datetime-local input (YYYY-MM-DDThh:mm)
@@ -18,6 +19,7 @@ const Rewind = () => {
   const [service, setService] = useState("");
   const [environment, setEnvironment] = useState("");
   const [queryParams, setQueryParams] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -40,7 +42,6 @@ const Rewind = () => {
     if (queryParams.service) params.service = queryParams.service;
     if (queryParams.environment) params.environment = queryParams.environment;
 
-    // Updated to use the scoring API endpoint
     const response = await api.get("/scoring/incident", { params });
 
     if (response.data.success) {
@@ -61,152 +62,176 @@ const Rewind = () => {
     retry: false,
   });
 
+  // Auto-select primary trigger event or first event when result is fetched
+  useEffect(() => {
+    if (result) {
+      const items = result.individual_scores || result.individualScores || [];
+      if (items.length > 0) {
+        const primary = items.find(i => i.role === 'primary');
+        const target = primary ? (primary.event?.id || primary.id) : (items[0].event?.id || items[0].id);
+        setSelectedEventId(target);
+      }
+    }
+  }, [result]);
+
   return (
-    <div className="flex flex-col h-full max-w-6xl w-full mx-auto p-6 md:p-8 animate-fade-in">
+    <div className="flex flex-col min-h-full max-w-7xl w-full mx-auto p-4 md:p-6 animate-fade-in text-text-primary">
       {/* Fixed Header & Controls */}
-      <div className="flex-shrink-0">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+      <div className="flex-shrink-0 mb-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
           <div>
-            <h1 className="text-4xl font-bold mb-2 flex items-center gap-3 text-white">
+            <h1 className="text-2xl font-bold mb-1 flex items-center gap-2 text-white tracking-tight">
               <div className="p-1.5 bg-accent/10 rounded-lg border border-accent/20 shadow-sm">
                 <History className="text-accent h-5 w-5" />
               </div>
               AI Diagnostics Rewind
             </h1>
-            <p className="text-text-muted text-sm">
-              Time-travel through infrastructure changes to identify the root cause of an incident.
+            <p className="text-text-muted text-xs">
+              Time-travel through infrastructure changes to isolate root cause triggers during outages.
             </p>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="surface border border-accent/20 rounded-2xl p-6 mb-6 shadow-md relative overflow-hidden">
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
-        <div className="absolute -left-10 -top-10 w-32 h-32 bg-accent/5 rounded-full blur-2xl"></div>
-
-        <form
-          onSubmit={handleSearch}
-          className="flex flex-wrap items-end gap-4 relative z-10"
-        >
-          <div className="min-w-[180px] flex-1">
-            <div className="flex justify-between items-center mb-1.5">
-              <label className="text-xs font-semibold text-text-secondary flex items-center gap-1.5 uppercase tracking-wide">
-                <Calendar size={12} className="text-accent" /> Incident Time (UTC)
-              </label>
-              <button
-                type="button"
-                onClick={() => setIncidentTime(dayjs().utc().format("YYYY-MM-DDTHH:mm"))}
-                className="text-xs text-accent hover:text-accent-hover hover:underline transition-colors uppercase tracking-wider font-bold"
-              >
-                Set to Now
-              </button>
-            </div>
-            <input
-              type="datetime-local"
-              value={incidentTime}
-              onChange={(e) => setIncidentTime(e.target.value)}
-              onClick={(e) => e.target.showPicker && e.target.showPicker()}
-              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder-white/20 cursor-pointer shadow-inner"
-              required
-            />
-          </div>
-
-          <div className="w-36">
-            <label className="text-xs font-semibold text-text-secondary mb-1.5 flex items-center gap-1.5 uppercase tracking-wide">
-              <Clock size={12} className="text-accent" /> Analysis Window
-            </label>
-            <select
-              value={windowMinutes}
-              onChange={(e) => setWindowMinutes(Number(e.target.value))}
-              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all appearance-none cursor-pointer shadow-inner"
-            >
-              <option value={15}>15 Minutes</option>
-              <option value={30}>30 Minutes</option>
-              <option value={60}>1 Hour</option>
-              <option value={120}>2 Hours</option>
-              <option value={360}>6 Hours</option>
-              <option value={1440}>24 Hours</option>
-            </select>
-          </div>
-
-          <div className="w-44">
-            <label className="text-xs font-semibold text-text-secondary mb-1.5 block uppercase tracking-wide">
-              Target Service
-            </label>
-            <input
-              type="text"
-              value={service}
-              onChange={(e) => setService(e.target.value)}
-              placeholder="e.g. payments"
-              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder-white/20 shadow-inner block"
-            />
-          </div>
-
-          <div className="w-36">
-            <label className="text-xs font-semibold text-text-secondary mb-1.5 block uppercase tracking-wide">
-              Environment
-            </label>
-            <input
-              type="text"
-              value={environment}
-              onChange={(e) => setEnvironment(e.target.value)}
-              placeholder="e.g. prod"
-              className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder-white/20 shadow-inner block"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-accent hover:bg-accent-hover text-background font-bold px-6 py-2 rounded-lg flex items-center gap-2 transition-all h-[38px] shadow-sm transform hover:-translate-y-0.5 text-sm"
+        {/* Search Controls Form */}
+        <div className="bg-black/40 border border-white/10 rounded-2xl p-4 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"></div>
+          
+          <form
+            onSubmit={handleSearch}
+            className="flex flex-wrap items-end gap-3.5 relative z-10"
           >
-            <Search size={16} />
-            Analyze
-          </button>
-        </form>
+            <div className="min-w-[180px] flex-1">
+              <div className="flex justify-between items-center mb-1">
+                <label className="text-[11px] font-semibold text-text-secondary flex items-center gap-1.5 uppercase tracking-wide">
+                  <Calendar size={12} className="text-accent" /> Incident Time (UTC)
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIncidentTime(dayjs().utc().format("YYYY-MM-DDTHH:mm"))}
+                  className="text-[10px] text-accent hover:underline font-bold uppercase tracking-wider"
+                >
+                  Set to Now
+                </button>
+              </div>
+              <input
+                type="datetime-local"
+                value={incidentTime}
+                onChange={(e) => setIncidentTime(e.target.value)}
+                onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all cursor-pointer"
+                required
+              />
+            </div>
+
+            <div className="w-36">
+              <label className="text-[11px] font-semibold text-text-secondary mb-1 flex items-center gap-1.5 uppercase tracking-wide">
+                <Clock size={12} className="text-accent" /> Window
+              </label>
+              <select
+                value={windowMinutes}
+                onChange={(e) => setWindowMinutes(Number(e.target.value))}
+                className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all cursor-pointer"
+              >
+                <option value={15}>15 Minutes</option>
+                <option value={30}>30 Minutes</option>
+                <option value={60}>1 Hour</option>
+                <option value={120}>2 Hours</option>
+                <option value={360}>6 Hours</option>
+                <option value={1440}>24 Hours</option>
+              </select>
+            </div>
+
+            <div className="w-40">
+              <label className="text-[11px] font-semibold text-text-secondary mb-1 block uppercase tracking-wide">
+                Target Service
+              </label>
+              <input
+                type="text"
+                value={service}
+                onChange={(e) => setService(e.target.value)}
+                placeholder="e.g. user-fe"
+                className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder:text-text-muted"
+              />
+            </div>
+
+            <div className="w-32">
+              <label className="text-[11px] font-semibold text-text-secondary mb-1 block uppercase tracking-wide">
+                Environment
+              </label>
+              <input
+                type="text"
+                value={environment}
+                onChange={(e) => setEnvironment(e.target.value)}
+                placeholder="e.g. prod"
+                className="w-full bg-black/60 border border-white/10 hover:border-accent/50 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-accent/50 transition-all placeholder:text-text-muted"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="bg-accent hover:opacity-90 text-black font-bold px-5 py-2 rounded-xl flex items-center gap-2 transition-all h-[34px] text-xs shadow-lg shadow-accent/15"
+            >
+              <Search size={14} />
+              Analyze Incident
+            </button>
+          </form>
+        </div>
       </div>
 
-      </div>
-
-      {/* Results */}
-      <div className="flex-1 overflow-y-auto space-y-6 pr-2">
-        {isLoading && <LoadingState message="Analyzing timeline..." />}
+      {/* Main Results Container - Split View Architecture */}
+      <div className="flex-1 space-y-6">
+        {isLoading && <LoadingState message="Running AI Root Cause Diagnostic Pipeline..." />}
 
         {error && (
-          <div className="bg-status-error/10 border border-status-error/20 text-status-error p-4 rounded-lg flex items-center gap-3">
-            <AlertCircle size={20} />
-            <span>{error.message || "Failed to fetch timeline"}</span>
+          <div className="bg-status-error/10 border border-status-error/20 text-status-error p-4 rounded-xl flex items-center gap-3 text-xs">
+            <AlertCircle size={18} />
+            <span>{error.message || "Failed to fetch timeline data"}</span>
           </div>
         )}
 
         {isFetched && result && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Left Column: Timeline */}
-            <div className="lg:col-span-2">
-              {result.individual_scores.length === 0 ? (
-                <div className="text-center py-12 text-text-muted border border-dashed border-border rounded-xl">
-                  No events found in this time window.
-                </div>
-              ) : (
-                <div>
-                  <div className="flex items-center gap-2 mb-4 text-sm text-text-secondary">
-                    <div className="w-2 h-2 rounded-full bg-accent"></div>
-                    Timeline of Changes
-                  </div>
-                  <Timeline eventsWithScores={result.individual_scores} />
-                </div>
-              )}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start animate-in fade-in duration-300">
+            
+            {/* Left Column (1/3 Width): Interactive Timeline */}
+            <div className="lg:col-span-1 space-y-3">
+              <div className="flex items-center justify-between px-1 mb-2">
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  <Clock size={14} className="text-accent" />
+                  Change Timeline
+                </h3>
+                <span className="text-[10px] font-mono text-text-muted">
+                  {(result.individual_scores || result.individualScores || []).length} events
+                </span>
+              </div>
+
+              <div className="max-h-[750px] overflow-y-auto pr-2 custom-scrollbar">
+                <RewindTimeline
+                  events={result.individual_scores || result.individualScores || []}
+                  selectedEventId={selectedEventId}
+                  onSelectEvent={setSelectedEventId}
+                />
+              </div>
             </div>
 
-            {/* Right Column: Analysis & Recommendations */}
-            <div className="lg:col-span-1 space-y-6">
-              <OverallRiskSummary assessment={result.overall_assessment} />
-              <Recommendations recommendations={result.overall_assessment.recommendations} />
-              <Correlations
-                correlations={result.correlations}
-                correlationStatus={result.correlation_status}
-                highestConfidence={result.highest_confidence}
+            {/* Right Column (2/3 Width): Live AI Diagnosis Panel */}
+            <div className="lg:col-span-2 space-y-6">
+              <RewindAiDiagnosisPanel
+                scoringResult={result}
+                selectedEventId={selectedEventId}
+                queryParams={queryParams}
               />
             </div>
+
+          </div>
+        )}
+
+        {!queryParams && (
+          <div className="border border-dashed border-white/10 rounded-2xl p-16 text-center space-y-3">
+            <Sparkles size={24} className="text-accent mx-auto animate-pulse" />
+            <h3 className="text-sm font-semibold text-white">Ready for Incident Analysis</h3>
+            <p className="text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
+              Enter the timestamp of an incident above to perform time-travel root cause correlation across your services.
+            </p>
           </div>
         )}
       </div>
