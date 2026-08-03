@@ -133,7 +133,7 @@ const Services = () => {
 
     // Limits check (assume Free plan has limit of 2)
     const distinctServicesCount = services.filter(s => s.status === 'active').length;
-    const isAtLimit = distinctServicesCount >= 2 && plan?.plan === 'free';
+    const isAtLimit = distinctServicesCount >= 2 && org?.plan === 'free';
 
     return (
         <div className="space-y-8 max-w-6xl mx-auto p-4 sm:p-6 text-text-primary">
