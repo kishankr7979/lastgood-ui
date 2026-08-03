@@ -64,3 +64,8 @@ export const sendTestEvent = async (service) => {
     const response = await api.post('/change-events/test', { service });
     return response.data.data;
 }
+
+export const updateServiceCriticality = async (serviceId, tier) => {
+    const response = await api.put(`/organizations/services/${serviceId}/criticality`, { tier });
+    return response.data;
+}
