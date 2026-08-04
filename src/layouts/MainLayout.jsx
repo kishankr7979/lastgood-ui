@@ -109,7 +109,7 @@ const MainLayout = () => {
       {/* Main Content */}
       <main className="flex-1 ml-64 relative min-w-0 bg-transparent h-screen flex flex-col overflow-hidden">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-        <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto flex flex-col custom-scrollbar">
           <Outlet />
         </div>
       </main>

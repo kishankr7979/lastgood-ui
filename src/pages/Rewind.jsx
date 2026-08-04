@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Calendar, Clock, AlertCircle, History, Sparkles } from "lucide-react";
+import { Search, Calendar, Clock, AlertCircle, History, Sparkles, SlidersHorizontal, ShieldAlert } from "lucide-react";
 import api from "../api";
 import RewindTimeline from "../components/Rewind/RewindTimeline";
 import RewindAiDiagnosisPanel from "../components/Rewind/RewindAiDiagnosisPanel";
+import { RewindIncidentBrief } from "../components/Rewind/RewindIncidentBrief";
 import { LoadingState } from "../components/LoadingState/LoadingState";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -20,6 +21,7 @@ const Rewind = () => {
   const [environment, setEnvironment] = useState("");
   const [queryParams, setQueryParams] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState(null);
+  const [viewMode, setViewMode] = useState('brief'); // 'brief' | 'detailed'
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -178,7 +180,7 @@ const Rewind = () => {
         </div>
       </div>
 
-      {/* Main Results Container - Split View Architecture */}
+      {/* Main Results Container */}
       <div className="flex-1 space-y-6">
         {isLoading && <LoadingState message="Running AI Root Cause Diagnostic Pipeline..." />}
 
@@ -190,37 +192,89 @@ const Rewind = () => {
         )}
 
         {isFetched && result && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start animate-in fade-in duration-300">
+          <div className="space-y-6 animate-in fade-in duration-300">
             
-            {/* Left Column (1/3 Width): Interactive Timeline */}
-            <div className="lg:col-span-1 space-y-3">
-              <div className="flex items-center justify-between px-1 mb-2">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Clock size={14} className="text-accent" />
-                  Change Timeline
-                </h3>
-                <span className="text-[10px] font-mono text-text-muted">
-                  {(result.individual_scores || result.individualScores || []).length} events
+            {/* View Mode Segmented Control Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+              <div className="flex items-center gap-1.5 p-1 bg-black/60 border border-white/10 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('brief')}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    viewMode === 'brief'
+                      ? 'bg-accent text-black shadow-md'
+                      : 'text-text-muted hover:text-white'
+                  }`}
+                >
+                  <Sparkles size={14} />
+                  <span>Incident Brief (Fast SRE Mode)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('detailed')}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    viewMode === 'detailed'
+                      ? 'bg-accent text-black shadow-md'
+                      : 'text-text-muted hover:text-white'
+                  }`}
+                >
+                  <Clock size={14} />
+                  <span>Detailed Timeline & Risk Scoring</span>
+                </button>
+              </div>
+
+              <div className="text-[10px] font-mono text-text-muted flex items-center gap-2">
+                <span>View Mode:</span>
+                <span className="text-accent font-bold uppercase bg-accent/10 border border-accent/20 px-2 py-0.5 rounded">
+                  {viewMode === 'brief' ? '2-Paragraph Incident Brief' : 'Full Timeline Breakdown'}
                 </span>
               </div>
-
-              <div className="max-h-[750px] overflow-y-auto pr-2 custom-scrollbar">
-                <RewindTimeline
-                  events={result.individual_scores || result.individualScores || []}
-                  selectedEventId={selectedEventId}
-                  onSelectEvent={setSelectedEventId}
-                />
-              </div>
             </div>
 
-            {/* Right Column (2/3 Width): Live AI Diagnosis Panel */}
-            <div className="lg:col-span-2 space-y-6">
-              <RewindAiDiagnosisPanel
+            {/* View Mode 1: Incident Brief Mode (Default) */}
+            {viewMode === 'brief' && (
+              <RewindIncidentBrief
                 scoringResult={result}
-                selectedEventId={selectedEventId}
                 queryParams={queryParams}
+                onSwitchToDetailed={() => setViewMode('detailed')}
               />
-            </div>
+            )}
+
+            {/* View Mode 2: Detailed Split Timeline & Diagnosis Mode */}
+            {viewMode === 'detailed' && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                {/* Left Column (1/3 Width): Interactive Timeline */}
+                <div className="lg:col-span-1 space-y-3">
+                  <div className="flex items-center justify-between px-1 mb-2">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <Clock size={14} className="text-accent" />
+                      Change Timeline
+                    </h3>
+                    <span className="text-[10px] font-mono text-text-muted">
+                      {(result.individual_scores || result.individualScores || []).length} events
+                    </span>
+                  </div>
+
+                  <div className="max-h-[750px] overflow-y-auto pr-2 custom-scrollbar">
+                    <RewindTimeline
+                      events={result.individual_scores || result.individualScores || []}
+                      selectedEventId={selectedEventId}
+                      onSelectEvent={setSelectedEventId}
+                      windowMinutes={queryParams?.windowMinutes || windowMinutes}
+                    />
+                  </div>
+                </div>
+
+                {/* Right Column (2/3 Width): Live AI Diagnosis Panel */}
+                <div className="lg:col-span-2 space-y-6">
+                  <RewindAiDiagnosisPanel
+                    scoringResult={result}
+                    selectedEventId={selectedEventId}
+                    queryParams={queryParams}
+                  />
+                </div>
+              </div>
+            )}
 
           </div>
         )}
