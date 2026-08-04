@@ -1,39 +1,40 @@
 import React from 'react';
-import { GitCommit, Box, ToggleRight, AlertTriangle, Database, Terminal, ShieldAlert, CheckCircle2, ExternalLink } from 'lucide-react';
+import { GitCommit, Box, ToggleRight, AlertTriangle, Database, ShieldAlert, ExternalLink } from 'lucide-react';
 import dayjs from 'dayjs';
 
 const getIconForType = (type) => {
   const t = (type || '').toLowerCase();
   if (t.includes('migration') || t.includes('db')) return <Database size={16} />;
-  if (t.includes('commit') || t.includes('push') || t.includes('github')) return <GitCommit size={16} />;
+  if (t.includes('commit') || t.includes('push') || t.includes('github') || t.includes('deploy')) return <GitCommit size={16} />;
   if (t.includes('flag')) return <ToggleRight size={16} />;
   if (t.includes('alert') || t.includes('error')) return <AlertTriangle size={16} />;
   return <Box size={16} />;
 };
 
-const getRoleBadge = (role, level) => {
+const getRoleBadge = (role, level, causalPos) => {
+  const posText = causalPos != null ? ` #${causalPos}` : '';
   if (role === 'primary') {
     return (
       <span className="px-2 py-0.5 rounded bg-rose-500/20 border border-rose-500/40 text-rose-400 font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 shadow-sm">
-        <ShieldAlert size={10} /> Primary Trigger
+        <ShieldAlert size={10} /> Primary Trigger{posText}
       </span>
     );
   }
   if (role === 'contributing') {
     return (
       <span className="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-400 font-semibold text-[9px] uppercase tracking-wider flex items-center gap-1">
-        <AlertTriangle size={10} /> Contributing
+        <AlertTriangle size={10} /> Contributing{posText}
       </span>
     );
   }
   return null;
 };
 
-const RewindTimeline = ({ events, selectedEventId, onSelectEvent }) => {
+const RewindTimeline = ({ events, selectedEventId, onSelectEvent, windowMinutes }) => {
   if (!events || events.length === 0) {
     return (
       <div className="p-8 text-center border border-dashed border-white/10 rounded-xl text-text-muted text-xs">
-        No change events detected in this time window.
+        No events in past <span className="text-accent font-mono font-bold">{windowMinutes || 30} minutes</span>.
       </div>
     );
   }
@@ -42,30 +43,32 @@ const RewindTimeline = ({ events, selectedEventId, onSelectEvent }) => {
     <div className="relative border-l border-white/10 ml-3 py-2 space-y-4">
       {events.map((item) => {
         const event = item.event || item;
-        const scoreObj = item.score || {};
-        const score = scoreObj.score || 0;
-        const level = scoreObj.level || 'low';
+        const scoreObj = item.risk_assessment || item.riskAssessment || item.score || {};
+        const score = typeof scoreObj.score === 'number' ? scoreObj.score : (typeof item.score === 'number' ? item.score : 0);
+        const level = scoreObj.level || (typeof item.score === 'object' ? item.score?.level : 'low');
         const role = item.role;
-        const isSelected = event.id === selectedEventId;
+        const causalPos = item.causal_position ?? item.causalPosition;
+        const eventId = event.id || item.id;
+        const isSelected = eventId === selectedEventId;
 
         const timeFormatted = event.occurred_at
           ? dayjs(event.occurred_at).format('HH:mm:ss UTC')
           : 'Unknown';
 
-        const isHighRisk = score >= 60 || level === 'critical' || level === 'high';
+        const isHighRisk = score >= 50 || level === 'critical' || level === 'high';
 
         return (
           <div
-            key={event.id}
+            key={eventId}
             className="relative pl-6 group cursor-pointer"
-            onClick={() => onSelectEvent(event.id)}
+            onClick={() => onSelectEvent(eventId)}
           >
             {/* Timeline Dot */}
             <div
               className={`absolute -left-2.5 top-2.5 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all ${
                 isSelected ? 'scale-125 ring-2 ring-accent/50' : 'group-hover:scale-110'
               } ${
-                role === 'primary' || score >= 80
+                role === 'primary' || score >= 70 || level === 'critical'
                   ? 'bg-rose-500/20 border-rose-500 text-rose-400'
                   : isHighRisk
                   ? 'bg-amber-500/20 border-amber-500 text-amber-400'
@@ -74,7 +77,7 @@ const RewindTimeline = ({ events, selectedEventId, onSelectEvent }) => {
             >
               <div
                 className={`w-2 h-2 rounded-full ${
-                  role === 'primary' || score >= 80
+                  role === 'primary' || score >= 70 || level === 'critical'
                     ? 'bg-rose-500'
                     : isHighRisk
                     ? 'bg-amber-500'
@@ -113,20 +116,20 @@ const RewindTimeline = ({ events, selectedEventId, onSelectEvent }) => {
 
               {/* Role Badges & Risk Tag */}
               <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[11px]">
-                <div className="flex items-center gap-2">
-                  {getRoleBadge(role, level)}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {getRoleBadge(role, level, causalPos)}
                   <span className="text-text-muted text-[10px]">
                     By: <span className="text-white font-medium">{event.meta?.author || event.source || 'CI/CD'}</span>
                   </span>
                 </div>
 
                 <span
-                  className={`font-mono font-bold text-[11px] ${
-                    score >= 80
-                      ? 'text-rose-400'
-                      : score >= 60
-                      ? 'text-amber-400'
-                      : 'text-emerald-400'
+                  className={`font-mono font-bold text-[11px] px-1.5 py-0.5 rounded ${
+                    score >= 70 || level === 'critical'
+                      ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20'
+                      : score >= 45 || level === 'medium' || level === 'high'
+                      ? 'text-amber-400 bg-amber-500/10 border border-amber-500/20'
+                      : 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
                   }`}
                 >
                   Score: {score}/100
@@ -164,6 +167,20 @@ const RewindTimeline = ({ events, selectedEventId, onSelectEvent }) => {
                     <div className="flex items-center justify-between">
                       <span>Branch:</span>
                       <span className="font-mono text-white text-[10px]">{event.meta.branch}</span>
+                    </div>
+                  )}
+                  {event.meta.version && (
+                    <div className="flex items-center justify-between">
+                      <span>Version:</span>
+                      <span className="font-mono text-white text-[10px]">{event.meta.version}</span>
+                    </div>
+                  )}
+                  {event.meta.tables_affected && (
+                    <div className="flex items-center justify-between">
+                      <span>Tables Affected:</span>
+                      <span className="font-mono text-white text-[10px]">
+                        {event.meta.tables_affected.join(', ')}
+                      </span>
                     </div>
                   )}
                   {event.meta.diff_stats?.files_changed_count > 0 && (
