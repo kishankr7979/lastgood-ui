@@ -12,6 +12,8 @@ import OAuthCallback from "./pages/OAuthCallback";
 import CompleteProfile from "./pages/CompleteProfile";
 import Services from "./pages/Services";
 import Sandbox from "./pages/Sandbox";
+import Postmortems from "./pages/Postmortems";
+import Topology from "./pages/Topology";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
 import { isIframe, isDevelopment } from "./util";
@@ -77,6 +79,8 @@ function App() {
             <Route path="events/:id" element={<EventDetail />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="services" element={<Services />} />
+            <Route path="postmortems" element={<Postmortems />} />
+            <Route path="topology" element={<Topology />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>

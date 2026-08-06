@@ -8,7 +8,9 @@ import {
   History,
   Blocks,
   Server,
-  UserCircle
+  UserCircle,
+  FileText,
+  Network
 } from "lucide-react";
 import { useOrganization } from "../hooks/useOrganization";
 import LogoutConfirmationModal from "../components/LogoutConfirmationModal/LogoutConfirmationModal";
@@ -27,6 +29,8 @@ const MainLayout = () => {
     { path: "/events", label: "Events", icon: List },
     { path: "/integrations", label: "Integrations", icon: Blocks },
     { path: "/services", label: "Services", icon: Server },
+    { path: "/postmortems", label: "Postmortems", icon: FileText },
+    { path: "/topology", label: "Topology", icon: Network },
     { path: "/settings", label: "Project Profile", icon: UserCircle },
   ];
 
