@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
-import { FileText, Plus, Sparkles, Copy, Check, Trash2, Calendar, AlertTriangle, ShieldAlert, Layers } from "lucide-react";
+import { getServices } from "../service/auth";
+import { FileText, Plus, Sparkles, Copy, Check, Trash2, ShieldAlert, Server, ArrowRight, Layers } from "lucide-react";
 import { toast } from "../components/ui/Toast";
 
 export default function Postmortems() {
+  const navigate = useNavigate();
   const [postmortems, setPostmortems] = useState([]);
+  const [userServices, setUserServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [selectedPostmortem, setSelectedPostmortem] = useState(null);
   const [copied, setCopied] = useState(false);
 
   // Form State for generating new postmortem
-  const [service, setService] = useState("order-service");
-  const [incidentTitle, setIncidentTitle] = useState("Production Outage: order-service DB Migration Failure");
+  const [service, setService] = useState("");
+  const [incidentTitle, setIncidentTitle] = useState("");
   const [severity, setSeverity] = useState("CRITICAL");
   const [incidentTimestamp, setIncidentTimestamp] = useState(
     new Date(Date.now() - 30 * 60 * 1000).toISOString().substring(0, 16)
@@ -20,7 +24,27 @@ export default function Postmortems() {
 
   useEffect(() => {
     fetchPostmortems();
+    fetchUserServices();
   }, []);
+
+  const fetchUserServices = async () => {
+    try {
+      const servicesData = await getServices();
+      const list = Array.isArray(servicesData) ? servicesData : [];
+      setUserServices(list);
+
+      if (list.length > 0) {
+        const firstSvc = list[0].service_name || list[0].name || list[0].service || "";
+        setService(firstSvc);
+        setIncidentTitle(`Production Outage: ${firstSvc}`);
+      } else {
+        setService("");
+        setIncidentTitle("");
+      }
+    } catch (err) {
+      console.error("Failed to fetch services:", err);
+    }
+  };
 
   const fetchPostmortems = async () => {
     try {
@@ -39,13 +63,24 @@ export default function Postmortems() {
     }
   };
 
+  const handleServiceChange = (e) => {
+    const selectedSvc = e.target.value;
+    setService(selectedSvc);
+    setIncidentTitle(`Production Outage: ${selectedSvc}`);
+  };
+
   const handleGenerate = async (e) => {
     e.preventDefault();
+    if (!service) {
+      toast.error("Please select a target service from your ingested services");
+      return;
+    }
+
     try {
       setGenerating(true);
       const res = await api.post("/v1/postmortem/generate", {
         service,
-        incidentTitle,
+        incidentTitle: incidentTitle || `Production Outage: ${service}`,
         severity,
         incidentTimestamp: new Date(incidentTimestamp).toISOString(),
       });
@@ -102,7 +137,7 @@ export default function Postmortems() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Generator Form & Recent Postmortems List */}
+        {/* Left Column: Generator Form & History */}
         <div className="space-y-6 lg:col-span-1">
           {/* Generator Form */}
           <div className="bg-black/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl shadow-xl space-y-4">
@@ -111,75 +146,109 @@ export default function Postmortems() {
               <span>Generate New SRE Postmortem</span>
             </div>
 
-            <form onSubmit={handleGenerate} className="space-y-4">
-              <div>
-                <label className="text-xs font-medium text-text-secondary block mb-1.5">Target Service</label>
-                <input
-                  type="text"
-                  value={service}
-                  onChange={(e) => setService(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent"
-                  placeholder="e.g. order-service"
-                  required
-                />
+            {userServices.length === 0 ? (
+              /* Empty State for Generator */
+              <div className="p-5 rounded-xl bg-white/5 border border-white/10 text-center space-y-3">
+                <Server size={28} className="mx-auto text-text-muted opacity-60" />
+                <div className="space-y-1">
+                  <h4 className="text-xs font-bold text-white">No Services Ingested Yet</h4>
+                  <p className="text-[11px] text-text-muted leading-relaxed">
+                    Ingest your change events via GitHub, Vercel, or API Keys to select a target service and generate 1-click postmortems.
+                  </p>
+                </div>
+                <button
+                  onClick={() => navigate("/integrations")}
+                  className="py-2 px-3 rounded-lg bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 text-xs font-semibold flex items-center justify-center gap-1.5 w-full transition-all"
+                >
+                  <span>Set Up First Integration</span>
+                  <ArrowRight size={13} />
+                </button>
               </div>
-
-              <div>
-                <label className="text-xs font-medium text-text-secondary block mb-1.5">Incident Title</label>
-                <input
-                  type="text"
-                  value={incidentTitle}
-                  onChange={(e) => setIncidentTitle(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent"
-                  placeholder="e.g. Production Outage: order-service DB Migration"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            ) : (
+              <form onSubmit={handleGenerate} className="space-y-4">
                 <div>
-                  <label className="text-xs font-medium text-text-secondary block mb-1.5">Severity</label>
-                  <select
-                    value={severity}
-                    onChange={(e) => setSeverity(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent"
-                  >
-                    <option value="CRITICAL" className="bg-zinc-900">CRITICAL</option>
-                    <option value="HIGH" className="bg-zinc-900">HIGH</option>
-                    <option value="MEDIUM" className="bg-zinc-900">MEDIUM</option>
-                  </select>
+                  <label className="text-xs font-medium text-text-secondary flex items-center justify-between mb-1.5">
+                    <span>Target Ingested Service</span>
+                    <span className="text-[10px] text-accent font-mono">
+                      {userServices.length} Active
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={service}
+                      onChange={handleServiceChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent appearance-none cursor-pointer"
+                    >
+                      {userServices.map((svc, idx) => {
+                        const name = svc.service_name || svc.name || svc.service || `service-${idx}`;
+                        return (
+                          <option key={svc.id || name} value={name} className="bg-zinc-900 text-white">
+                            {name} {svc.criticality_tier ? `(${svc.criticality_tier})` : ''}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <Server size={14} className="absolute right-3 top-2.5 text-text-muted pointer-events-none" />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-medium text-text-secondary block mb-1.5">Incident Time</label>
+                  <label className="text-xs font-medium text-text-secondary block mb-1.5">Incident Title</label>
                   <input
-                    type="datetime-local"
-                    value={incidentTimestamp}
-                    onChange={(e) => setIncidentTimestamp(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-2 py-2 text-[11px] text-white focus:outline-none focus:border-accent"
+                    type="text"
+                    value={incidentTitle}
+                    onChange={(e) => setIncidentTitle(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent"
+                    placeholder="e.g. Production Outage: Service Migration Failure"
                     required
                   />
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                disabled={generating}
-                className="w-full py-2.5 px-4 rounded-xl bg-accent text-black font-semibold text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
-              >
-                {generating ? (
-                  <>
-                    <Sparkles size={14} className="animate-spin" />
-                    <span>Analyzing Telemetry...</span>
-                  </>
-                ) : (
-                  <>
-                    <Plus size={14} />
-                    <span>Generate Postmortem Report</span>
-                  </>
-                )}
-              </button>
-            </form>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-medium text-text-secondary block mb-1.5">Severity</label>
+                    <select
+                      value={severity}
+                      onChange={(e) => setSeverity(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent"
+                    >
+                      <option value="CRITICAL" className="bg-zinc-900">CRITICAL</option>
+                      <option value="HIGH" className="bg-zinc-900">HIGH</option>
+                      <option value="MEDIUM" className="bg-zinc-900">MEDIUM</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-medium text-text-secondary block mb-1.5">Incident Time</label>
+                    <input
+                      type="datetime-local"
+                      value={incidentTimestamp}
+                      onChange={(e) => setIncidentTimestamp(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-2 py-2 text-[11px] text-white focus:outline-none focus:border-accent"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={generating}
+                  className="w-full py-2.5 px-4 rounded-xl bg-accent text-black font-semibold text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
+                >
+                  {generating ? (
+                    <>
+                      <Sparkles size={14} className="animate-spin" />
+                      <span>Analyzing Telemetry...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={14} />
+                      <span>Generate Postmortem Report</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
           </div>
 
           {/* History List */}
@@ -229,7 +298,7 @@ export default function Postmortems() {
           </div>
         </div>
 
-        {/* Right Column: Detailed Postmortem Document Viewer */}
+        {/* Right Column: Detailed Postmortem Viewer */}
         <div className="lg:col-span-2 space-y-6">
           {selectedPostmortem ? (
             <div className="bg-black/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl shadow-xl space-y-6">
@@ -317,7 +386,7 @@ export default function Postmortems() {
           ) : (
             <div className="bg-black/40 border border-white/10 rounded-2xl p-12 text-center text-text-muted space-y-3">
               <FileText size={32} className="mx-auto text-text-muted" />
-              <p className="text-sm">Select a postmortem from the left or generate a new one.</p>
+              <p className="text-sm">Select a postmortem from the left or generate a new report.</p>
             </div>
           )}
         </div>
