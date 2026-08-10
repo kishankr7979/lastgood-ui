@@ -13,7 +13,7 @@ export default {
                 border: "hsl(var(--border))",
                 accent: {
                     DEFAULT: "hsl(var(--accent))",
-                    hover: "hsl(175 80% 55%)",
+                    hover: "hsl(212 100% 68%)",
                     dim: "hsl(var(--accent) / 0.1)",
                 },
                 muted: {
@@ -24,20 +24,24 @@ export default {
                     primary: 'hsl(var(--background))',
                     secondary: 'hsl(var(--card))',
                     tertiary: 'hsl(var(--muted))',
+                    surface: '#0f0f11',
+                    hover: '#18181b',
                 },
                 text: {
-                    primary: 'hsl(var(--foreground))',
-                    secondary: 'hsl(var(--muted-foreground))',
-                    muted: 'hsl(var(--muted-foreground) / 0.7)',
+                    primary: '#ffffff',
+                    secondary: '#a1a1aa',
+                    muted: '#71717a',
                 },
                 status: {
-                    success: '#34D399',
-                    warning: '#FBBF24',
-                    error: '#F87171',
+                    success: '#10b981',
+                    warning: '#f59e0b',
+                    error: '#f43f5e',
+                    info: '#38bdf8',
                 },
             },
             fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'],
+                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
             },
             fontSize: {
                 xs: '11px',      // Minimum readable size

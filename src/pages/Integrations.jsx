@@ -321,65 +321,57 @@ const Integrations = () => {
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl mx-auto animate-fade-in">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-2 flex items-center gap-3 text-white">
-          <div className="p-2 bg-accent/10 rounded-xl border border-accent/20 shadow-sm">
-            <Blocks className="text-accent h-5 w-5" />
-          </div>
-          Ingestion Channels
-        </h1>
-        <p className="text-text-muted text-sm max-w-2xl leading-relaxed">
-          Connect your engineering ecosystem to LastGood. We'll automatically ingest, correlate, and analyze changes to discover failure root causes instantly.
-        </p>
-      </div>
+    <PageContainer>
+      <PageHeader
+        category="INGESTION PIPELINES"
+        icon={Blocks}
+        title="Ingestion Channels"
+        description="Connect your engineering ecosystem to LastGood. Automatically ingest, correlate, and analyze system changes to discover failure root causes instantly."
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {channels.map((channel) => {
           const Icon = channel.icon;
           return (
             <div
               key={channel.id}
               onClick={() => channel.active && setSelectedChannel(channel.id)}
-              className={`surface border rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between ${channel.active
-                ? "border-white/5 hover:border-accent/40 hover:shadow-[0_0_20px_rgba(45,212,191,0.08)] cursor-pointer hover:-translate-y-1"
-                : "border-white/5 opacity-55 grayscale cursor-not-allowed"
+              className={`bg-[#0c0c0e] border rounded-xl p-5 transition-all duration-200 flex flex-col justify-between ${channel.active
+                ? "border-white/10 hover:border-white/20 cursor-pointer hover:bg-[#0e0e11]"
+                : "border-white/5 opacity-50 grayscale cursor-not-allowed"
                 }`}
             >
               <div>
                 <div className="flex justify-between items-start mb-4">
-                  <div className={`p-2.5 rounded-xl border ${channel.active ? "bg-accent/10 border-accent/20 text-accent" : "bg-white/5 border-white/5 text-zinc-500"}`}>
-                    <Icon size={20} />
+                  <div className={`p-2.5 rounded-lg border ${channel.active ? "bg-white/5 border-white/10 text-white" : "bg-white/5 border-white/5 text-zinc-500"}`}>
+                    <Icon size={18} />
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${channel.status === "Recommended" || channel.status === "Connected"
-                    ? "bg-status-success/15 border-status-success/20 text-status-success"
+                  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${channel.status === "Recommended" || channel.status === "Connected"
+                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
                     : channel.status === "Active"
-                      ? "bg-accent/15 border-accent/20 text-accent"
-                      : "bg-white/5 border-white/5 text-zinc-400"
+                      ? "bg-sky-500/10 border-sky-500/20 text-sky-400"
+                      : "bg-white/5 border-white/5 text-zinc-500"
                     }`}>
                     {channel.status}
                   </span>
                 </div>
-
-                <h3 className="text-white font-bold text-base mb-2">{channel.title}</h3>
-                <p className="text-text-muted text-xs leading-relaxed mb-6">{channel.description}</p>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 font-semibold">{channel.category}</span>
+                <h3 className="font-bold text-white text-base mt-0.5 mb-1">{channel.title}</h3>
+                <p className="text-zinc-400 text-xs leading-relaxed mb-4">{channel.description}</p>
               </div>
 
               {channel.active ? (
-                <div className="flex items-center gap-1.5 text-xs text-accent font-bold group-hover:text-accent-hover mt-auto">
-                  Configure Integration
-                  <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                <div className="flex items-center gap-1.5 text-xs font-mono font-semibold text-white group-hover:text-sky-400 pt-2 border-t border-white/5">
+                  <span>Configure Pipeline</span>
+                  <ChevronRight size={14} className="text-zinc-500" />
                 </div>
               ) : (
-                <div className="text-xs text-zinc-500 font-medium mt-auto">
-                  Coming Soon
-                </div>
+                <span className="text-[11px] font-mono text-zinc-600 pt-2 border-t border-white/5">Integration in Development</span>
               )}
             </div>
           );
         })}
       </div>
-
       {/* Support Info Footer Banner */}
       <div className="mt-12 surface border border-white/5 rounded-2xl p-6 bg-gradient-to-r from-accent/5 to-transparent flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -393,7 +385,7 @@ const Integrations = () => {
           Contact Engineering Support
         </button>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

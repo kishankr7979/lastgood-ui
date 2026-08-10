@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Code, GitCommit, User, Activity, Clock, Box, Database, ShieldAlert, Sparkles, ExternalLink, ChevronDown, Check, FileText, Server } from 'lucide-react';
+import { ArrowLeft, Code, Activity, Clock, Database, Sparkles, ChevronDown } from 'lucide-react';
 import { LoadingState } from '../components/LoadingState/LoadingState';
 import api from '../api';
 import dayjs from 'dayjs';
+import { PageHeader } from '../components/ui/PageHeader';
+import { PageContainer } from '../components/ui/PageContainer';
 
 const fetchEvent = async ({ queryKey }) => {
     const [_, id] = queryKey;
@@ -27,16 +29,20 @@ const EventDetail = () => {
 
     if (isLoading) return <LoadingState message="Retrieving event details..." />;
     if (error) return (
-        <div className="p-8 text-center text-status-error flex items-center justify-center h-64">
-            <div className="bg-status-error/10 border border-status-error/20 p-6 rounded-2xl">
-                Error: {error.message}
+        <PageContainer>
+            <div className="p-8 text-center text-rose-400 flex items-center justify-center h-64">
+                <div className="bg-rose-500/10 border border-rose-500/20 p-6 rounded-xl font-mono text-xs">
+                    Error: {error.message}
+                </div>
             </div>
-        </div>
+        </PageContainer>
     );
     if (!event) return (
-        <div className="p-8 text-center text-text-muted h-64 flex items-center justify-center">
-            Event not found
-        </div>
+        <PageContainer>
+            <div className="p-8 text-center text-zinc-400 h-64 flex items-center justify-center font-mono text-xs">
+                Event not found
+            </div>
+        </PageContainer>
     );
 
     const formattedDate = dayjs(event.occurred_at).utc().format('MMM DD, YYYY • HH:mm:ss UTC');
@@ -46,58 +52,54 @@ const EventDetail = () => {
     const commitUrl = meta.commit_url || meta.url || (meta.repository && meta.commit ? `https://github.com/${meta.repository}/commit/${meta.commit}` : null);
 
     const handleRunRewind = () => {
-        const timeIso = dayjs.utc(event.occurred_at).format('YYYY-MM-DDTHH:mm');
         navigate(`/rewind`);
     };
 
     return (
-        <div className="p-4 md:p-8 max-w-5xl mx-auto animate-fade-in text-text-primary space-y-6">
-            {/* Navigation Header */}
-            <div className="flex items-center justify-between">
-                <Link to="/events" className="inline-flex items-center gap-2 text-text-muted hover:text-accent transition-all hover:-translate-x-1 group text-xs font-semibold uppercase tracking-wider">
-                    <div className="p-1.5 rounded-md bg-white/5 group-hover:bg-accent/10 transition-colors">
-                        <ArrowLeft size={14} className="group-hover:text-accent" />
-                    </div>
-                    Back to Production Feed
+        <PageContainer>
+            {/* Navigation & Header */}
+            <div className="mb-4">
+                <Link to="/events" className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-all text-xs font-mono mb-4">
+                    <ArrowLeft size={14} />
+                    <span>Back to Production Stream</span>
                 </Link>
-
-                <button
-                    onClick={handleRunRewind}
-                    className="bg-accent hover:opacity-90 text-black font-bold px-4 py-2 rounded-xl flex items-center gap-2 transition-all text-xs shadow-lg shadow-accent/15"
-                >
-                    <Sparkles size={14} />
-                    <span>Analyze Anomaly in Rewind</span>
-                </button>
             </div>
 
-            {/* Event Hero Card */}
-            <div className="bg-black/50 border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative">
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-accent via-blue-500 to-purple-500"></div>
-                
-                <div className="p-6 md:p-8 border-b border-white/5 relative bg-gradient-to-b from-white/[0.02] to-transparent space-y-4">
+            <PageHeader
+                category={`TELEMETRY EVENT #${event.id?.toString().substring(0, 8)}`}
+                icon={Activity}
+                title={event.summary || `${event.type} on ${event.service}`}
+                description={`Recorded ${formattedDate} (${relativeTime})`}
+                actions={
+                    <button
+                        onClick={handleRunRewind}
+                        className="bg-white hover:bg-zinc-200 text-black font-mono font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-xs shadow-sm cursor-pointer"
+                    >
+                        <Sparkles size={14} />
+                        <span>Analyze in Rewind</span>
+                    </button>
+                }
+            />
+
+            {/* Event Hero Details Card */}
+            <div className="bg-[#0c0c0e] border border-white/10 rounded-xl overflow-hidden shadow-sm space-y-6">
+                <div className="p-6 border-b border-white/[0.08] bg-[#09090b] space-y-4">
                     <div className="flex flex-wrap items-center gap-2">
-                        <span className="px-2.5 py-1 bg-accent/15 border border-accent/20 text-accent rounded text-xs font-bold uppercase tracking-widest shadow-sm">
+                        <span className="px-2.5 py-1 bg-white/10 border border-white/15 text-white rounded text-xs font-mono font-bold uppercase tracking-wider">
                             {event.service}
                         </span>
-                        <span className="px-2.5 py-1 bg-white/5 border border-white/10 text-white rounded text-xs uppercase tracking-widest">
+                        <span className="px-2.5 py-1 bg-zinc-900 border border-white/10 text-zinc-300 rounded text-xs font-mono uppercase tracking-wider">
                             {event.environment}
                         </span>
-                        <span className="px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded text-xs font-mono uppercase tracking-widest">
+                        <span className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded text-xs font-mono uppercase tracking-wider">
                             {event.type}
                         </span>
-                        <span className="ml-auto text-text-muted text-xs font-mono flex items-center gap-1.5">
-                            <Clock size={13} className="text-accent" /> {formattedDate} ({relativeTime})
-                        </span>
                     </div>
-
-                    <h1 className="text-xl md:text-2xl font-bold text-white leading-snug">
-                        {event.summary || `${event.type} on ${event.service}`}
-                    </h1>
                 </div>
 
                 {/* Structured Metadata Breakdown (High-Signal Grid) */}
-                <div className="p-6 bg-black/40 space-y-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-6 space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 font-mono text-xs">
                         {/* Author */}
                         <div className="p-4 bg-black/60 border border-white/5 rounded-xl space-y-1">
                             <span className="text-[10px] uppercase font-mono text-text-muted block font-semibold flex items-center gap-1">
@@ -214,7 +216,7 @@ const EventDetail = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </PageContainer>
     );
 };
 

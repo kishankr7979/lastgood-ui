@@ -39,6 +39,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useOrganization } from '../hooks/useOrganization';
 import { API_BASE_URL } from '../constants';
+import { PageHeader } from '../components/ui/PageHeader';
+import { PageContainer } from '../components/ui/PageContainer';
 
 dayjs.extend(relativeTime);
 
@@ -199,68 +201,62 @@ const Services = () => {
     const getTierObj = (tierId) => TIERS.find(t => t.id === (tierId || 'tier-3')) || TIERS[2];
 
     return (
-        <div className="space-y-8 max-w-6xl mx-auto p-4 sm:p-6 text-text-primary">
-
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                        <Server className="text-accent" size={24} />
-                        Services Architecture
-                    </h1>
-                    <p className="text-xs text-text-muted mt-1 leading-relaxed">
-                        Configure operational criticality tiers for change risk scoring and manage service API credentials.
-                    </p>
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => refetch()}
-                        disabled={isLoading || isFetching}
-                        className="p-2 border border-white/10 rounded-lg hover:bg-white/5 text-text-secondary transition-colors"
-                        title="Refresh"
-                    >
-                        <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
-                    </button>
-                    {githubIntegration?.status === 'active' ? (
+        <PageContainer>
+            <PageHeader
+                category="INFRASTRUCTURE CATALOG"
+                icon={Server}
+                title="Services Architecture"
+                description="Configure operational criticality tiers for change risk scoring and manage service API credentials."
+                actions={
+                    <div className="flex items-center gap-2.5">
                         <button
-                            onClick={() => {
-                                if (org?.id) {
-                                    window.location.href = `${API_BASE_URL}/api/integrations/github-app/install?orgId=${org.id}`;
-                                }
-                            }}
-                            className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 px-3.5 py-2.5 rounded-lg text-xs font-semibold transition-all text-emerald-400 shadow-sm"
-                            title="GitHub App is connected."
+                            onClick={() => refetch()}
+                            disabled={isLoading || isFetching}
+                            className="p-2 border border-white/10 rounded-lg bg-[#09090b] hover:bg-white/5 text-zinc-300 transition-colors cursor-pointer"
+                            title="Refresh"
                         >
-                            <span className="flex h-2 w-2 relative">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                            <Github size={14} />
-                            <span>GitHub Connected</span>
+                            <RefreshCw size={14} className={isFetching ? 'animate-spin' : ''} />
                         </button>
-                    ) : (
+                        {githubIntegration?.status === 'active' ? (
+                            <button
+                                onClick={() => {
+                                    if (org?.id) {
+                                        window.location.href = `${API_BASE_URL}/api/integrations/github-app/install?orgId=${org.id}`;
+                                    }
+                                }}
+                                className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 px-3.5 py-2 rounded-lg text-xs font-mono font-semibold transition-all text-emerald-400 shadow-sm cursor-pointer"
+                                title="GitHub App is connected."
+                            >
+                                <span className="flex h-2 w-2 relative">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                <Github size={14} />
+                                <span>GitHub Connected</span>
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    if (org?.id) {
+                                        window.location.href = `${API_BASE_URL}/api/integrations/github-app/install?orgId=${org.id}`;
+                                    }
+                                }}
+                                className="flex items-center gap-2 bg-[#18181b] hover:bg-zinc-800 px-3.5 py-2 rounded-lg text-xs font-mono font-semibold transition-all text-white border border-white/10 cursor-pointer"
+                            >
+                                <Github size={14} />
+                                Connect GitHub
+                            </button>
+                        )}
                         <button
-                            onClick={() => {
-                                if (org?.id) {
-                                    window.location.href = `${API_BASE_URL}/api/integrations/github-app/install?orgId=${org.id}`;
-                                }
-                            }}
-                            className="flex items-center gap-2 bg-[#24292e] hover:bg-[#2f363d] px-4 py-2.5 rounded-lg text-xs font-semibold transition-all text-white shadow-lg border border-white/10"
+                            onClick={() => setIsCreateOpen(true)}
+                            className="flex items-center gap-2 bg-white hover:bg-zinc-200 px-4 py-2 rounded-lg text-xs font-mono font-bold transition-all text-black shadow-sm cursor-pointer"
                         >
-                            <Github size={14} />
-                            Connect GitHub
+                            <Plus size={14} />
+                            Connect Service
                         </button>
-                    )}
-                    <button
-                        onClick={() => setIsCreateOpen(true)}
-                        className="flex items-center gap-2 bg-gradient-accent px-4 py-2.5 rounded-lg text-xs font-semibold hover:opacity-90 transition-all text-black shadow-lg shadow-accent/15"
-                    >
-                        <Plus size={14} />
-                        Connect Service
-                    </button>
-                </div>
-            </div>
+                    </div>
+                }
+            />
 
             {/* View Sub-Navigation Tabs */}
             <div className="flex items-center gap-2 border-b border-white/5 pb-1">
@@ -664,7 +660,7 @@ const Services = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </PageContainer>
     );
 };
 

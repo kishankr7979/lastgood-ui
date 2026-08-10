@@ -4,6 +4,8 @@ import api from "../api";
 import { getServices } from "../service/auth";
 import { FileText, Plus, Sparkles, Copy, Check, Trash2, ShieldAlert, Server, ArrowRight, Layers } from "lucide-react";
 import { toast } from "../components/ui/Toast";
+import { PageHeader } from "../components/ui/PageHeader";
+import { PageContainer } from "../components/ui/PageContainer";
 
 export default function Postmortems() {
   const navigate = useNavigate();
@@ -120,29 +122,21 @@ export default function Postmortems() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="flex items-start justify-between border-b border-white/10 pb-6">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-accent/10 border border-accent/20 text-accent">
-              <FileText size={24} />
-            </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">SRE Incident Postmortems</h1>
-          </div>
-          <p className="text-sm text-text-secondary mt-1">
-            Automated 1-click postmortem generation with root-cause analysis, chronological timelines, and action items.
-          </p>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHeader
+        category="RELIABILITY & COMPLIANCE"
+        icon={FileText}
+        title="SRE Incident Postmortems"
+        description="Automated 1-click postmortem report generator featuring AI root-cause analysis, timeline reconstruction, and corrective action items."
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Generator Form & History */}
         <div className="space-y-6 lg:col-span-1">
           {/* Generator Form */}
-          <div className="bg-black/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl shadow-xl space-y-4">
-            <div className="flex items-center gap-2 text-white font-semibold text-sm">
-              <Sparkles size={16} className="text-accent" />
+          <div className="bg-[#0c0c0e] border border-white/10 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="flex items-center gap-2 text-white font-mono font-semibold text-xs uppercase tracking-wider">
+              <Sparkles size={15} className="text-zinc-300" />
               <span>Generate New SRE Postmortem</span>
             </div>
 
@@ -391,6 +385,6 @@ export default function Postmortems() {
           )}
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

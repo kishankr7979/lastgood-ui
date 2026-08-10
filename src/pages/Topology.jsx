@@ -4,6 +4,8 @@ import api from "../api";
 import { getServices } from "../service/auth";
 import { Network, Plus, Trash2, Server, ArrowRight, Layers, GitFork, Sparkles, X, Activity, ArrowDownRight, Eye } from "lucide-react";
 import { toast } from "../components/ui/Toast";
+import { PageHeader } from "../components/ui/PageHeader";
+import { PageContainer } from "../components/ui/PageContainer";
 
 export default function Topology() {
   const navigate = useNavigate();
@@ -140,31 +142,24 @@ export default function Topology() {
   });
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="flex items-start justify-between border-b border-white/10 pb-6">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-accent/10 border border-accent/20 text-accent">
-              <Network size={24} />
-            </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Service Topology & Workflow Map</h1>
-          </div>
-          <p className="text-sm text-text-secondary mt-1">
-            Build your architecture dependency workflow map so LastGood scoring engine automatically calculates cascading blast radius during outages.
-          </p>
-        </div>
-
-        {realServiceNames.length > 0 && (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="py-2.5 px-4 rounded-xl bg-accent text-black font-semibold text-xs flex items-center gap-2 hover:brightness-110 transition-all shadow-lg"
-          >
-            <Plus size={15} />
-            <span>Add Dependency Link</span>
-          </button>
-        )}
-      </div>
+    <PageContainer>
+      <PageHeader
+        category="SERVICE DEPENDENCY GRAPH"
+        icon={Network}
+        title="Service Topology & Workflow Map"
+        description="Build your system architecture dependency map so LastGood's scoring engine calculates cascading blast radius propagation automatically during outages."
+        actions={
+          realServiceNames.length > 0 && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="py-2 px-3.5 rounded-lg bg-white hover:bg-zinc-200 text-black font-mono font-bold text-xs flex items-center gap-2 transition-all shadow-sm cursor-pointer"
+            >
+              <Plus size={14} />
+              <span>Add Dependency Link</span>
+            </button>
+          )
+        }
+      />
 
       {/* Main Content */}
       {realServiceNames.length === 0 ? (
@@ -519,6 +514,6 @@ export default function Topology() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
