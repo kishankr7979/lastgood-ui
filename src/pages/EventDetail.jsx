@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { PageHeader } from '../components/ui/PageHeader';
 import { PageContainer } from '../components/ui/PageContainer';
 
+
 const fetchEvent = async ({ queryKey }) => {
     const [_, id] = queryKey;
     const response = await api.get(`/change-events/${id}`);

@@ -50,6 +50,8 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
 
+  console.log({ isIframe })
+
   if (!isIframe) {
     useHelpLoom()
   }
