@@ -1,16 +1,16 @@
 # Graph Report - lastgood-ui  (2026-08-11)
 
 ## Corpus Check
-- 84 files · ~44,941 words
+- 86 files · ~45,634 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 417 nodes · 591 edges · 39 communities (32 shown, 7 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.62)
+- 423 nodes · 619 edges · 41 communities (34 shown, 7 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.65)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e7cc0bd0`
+- Built from commit: `19c1c3cc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,11 +19,11 @@
 - devDependencies
 - dependencies
 - App.jsx
-- Settings.jsx
+- useOrganization
 - What You Must Do When Invoked
 - Requirements
 - Correlations.jsx
-- auth.js
+- Login.jsx
 - Staff Frontend Engineer Persona Profile
 - Events.jsx
 - graphify reference: extra exports and benchmark
@@ -42,6 +42,8 @@
 - vercel.json
 - OverallRiskSummary.jsx
 - oncall-engineer/SKILL.md
+- EventCard.jsx
+- RewindTimeline.jsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `What You Must Do When Invoked` - 12 edges
@@ -50,27 +52,27 @@
 4. `Services()` - 10 edges
 5. `/graphify` - 10 edges
 6. `api` - 9 edges
-7. `Design Document` - 9 edges
-8. `Correctness Properties` - 9 edges
-9. `PageContainer()` - 8 edges
-10. `PageHeader()` - 8 edges
+7. `PageContainer()` - 9 edges
+8. `PageHeader()` - 9 edges
+9. `Design Document` - 9 edges
+10. `Correctness Properties` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `GlobalGuard()` --references--> `react`  [EXTRACTED]
+  src/App.jsx → package.json
 - `GitHubWebhookModal()` --calls--> `useOrgStore`  [EXTRACTED]
   src/components/GitHubWebhookModal/GitHubWebhookModal.jsx → src/stores/useOrgStore.js
 - `useOrganization()` --indirect_call--> `getOrganization()`  [INFERRED]
   src/hooks/useOrganization.js → src/service/organization.js
 - `Services()` --calls--> `useOrganization()`  [EXTRACTED]
   src/pages/Services.jsx → src/hooks/useOrganization.js
-- `Integrations()` --calls--> `getAPIKeyByOrg()`  [EXTRACTED]
-  src/pages/Integrations.jsx → src/service/api-key.js
-- `Integrations()` --calls--> `getIntegrationByProvider()`  [EXTRACTED]
-  src/pages/Integrations.jsx → src/service/auth.js
+- `useOrganizationCount()` --indirect_call--> `getOrganizationCount()`  [INFERRED]
+  src/hooks/useOrganizationCount.js → src/service/organization.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (39 total, 7 thin omitted)
+## Communities (41 total, 7 thin omitted)
 
 ### Community 0 - "Correctness Properties"
 Cohesion: 0.05
@@ -85,11 +87,11 @@ Cohesion: 0.05
 Nodes (37): axios, class-variance-authority, clsx, date-fns, dayjs, lucide-react, dependencies, axios (+29 more)
 
 ### Community 3 - "App.jsx"
-Cohesion: 0.10
-Nodes (23): App(), RewindAiDiagnosisPanel(), RewindIncidentBrief(), getIconForType(), getRoleBadge(), RewindTimeline(), RiskScoreRing(), toast (+15 more)
+Cohesion: 0.11
+Nodes (31): api, App(), LoadingState(), RewindIncidentBrief(), PageContainer(), PageHeader(), toast, ToastContainer() (+23 more)
 
-### Community 4 - "Settings.jsx"
-Cohesion: 0.19
+### Community 4 - "useOrganization"
+Cohesion: 0.17
 Nodes (11): CreateAPIKey(), GitHubWebhookModal(), LogoutConfirmationModal(), useApiKeys(), useOrganization(), MainLayout(), Settings(), createAPIKey() (+3 more)
 
 ### Community 5 - "What You Must Do When Invoked"
@@ -104,17 +106,17 @@ Nodes (16): Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Accep
 Cohesion: 0.60
 Nodes (3): Correlations(), getConfidenceColor(), STATUS_STYLES
 
-### Community 8 - "auth.js"
-Cohesion: 0.16
-Nodes (20): api, PageContainer(), PageHeader(), EventDetail(), fetchEvent(), Login(), timelineSteps, Postmortems() (+12 more)
+### Community 8 - "Login.jsx"
+Cohesion: 0.22
+Nodes (13): GlobalGuard(), useOrganizationCount(), CompleteProfile(), Login(), timelineSteps, loginUser(), oauthSignup(), resetPassword() (+5 more)
 
 ### Community 9 - "Staff Frontend Engineer Persona Profile"
 Cohesion: 0.15
 Nodes (12): 1. Architecture & Platform Engineering, 2. DevOps & High-Value Delivery Pipelines, 3. Cross-Functional Multiplier & Mentorship, A Day in the Life, Core Technical Skillset, Daily Workflow & Behavioral Attributes, Key Mindsets, Key Responsibilities (+4 more)
 
 ### Community 10 - "Events.jsx"
-Cohesion: 0.12
-Nodes (15): EventCard(), getRiskColor(), ROLE_BADGE_LABELS, ROLE_BADGE_STYLES, DateRangeFilter(), MultiSelectFilter(), SearchBar(), LoadingState() (+7 more)
+Cohesion: 0.23
+Nodes (8): DateRangeFilter(), MultiSelectFilter(), SearchBar(), normaliseItem(), Timeline(), fetchEvents(), useEvents(), Events()
 
 ### Community 11 - "graphify reference: extra exports and benchmark"
 Cohesion: 0.22
@@ -152,6 +154,14 @@ Nodes (3): Expanding the ESLint configuration, React Compiler, React + Vite
 Cohesion: 0.06
 Nodes (34): Architecture Reviews, Backend Expertise, Coding Standards, Communication Style, Core Responsibilities, Databases, Debugging Process, Decision Framework (+26 more)
 
+### Community 39 - "EventCard.jsx"
+Cohesion: 0.22
+Nodes (8): EventCard(), getRiskColor(), ROLE_BADGE_LABELS, ROLE_BADGE_STYLES, RewindAiDiagnosisPanel(), RiskFactorDetails(), RiskScoreRing(), AiDiagnosisPanel()
+
+### Community 40 - "RewindTimeline.jsx"
+Cohesion: 0.83
+Nodes (3): getIconForType(), getRoleBadge(), RewindTimeline()
+
 ## Knowledge Gaps
 - **166 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+161 more)
   These have ≤1 connection - possible missing edges or undocumented components.
@@ -160,8 +170,10 @@ Nodes (34): Architecture Reviews, Backend Expertise, Coding Standards, Communica
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `devDependencies` connect `devDependencies` to `dependencies`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `GlobalGuard()` connect `Login.jsx` to `dependencies`, `App.jsx`?**
+  _High betweenness centrality (0.107) - this node is a cross-community bridge._
+- **Why does `react` connect `dependencies` to `Login.jsx`?**
+  _High betweenness centrality (0.107) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
   _166 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Correctness Properties` be split into smaller, more focused modules?**
@@ -171,6 +183,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.05263157894736842 - nodes in this community are weakly interconnected._
 - **Should `App.jsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.09851551956815115 - nodes in this community are weakly interconnected._
-- **Should `What You Must Do When Invoked` be split into smaller, more focused modules?**
-  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11320754716981132 - nodes in this community are weakly interconnected._

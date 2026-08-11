@@ -20,13 +20,13 @@
     "semantic_hash": ""
   },
   "src/App.jsx": {
-    "mtime": 1786382624.368992,
-    "ast_hash": "de48eb3e7ae4690641fd4e1a69b63d39",
+    "mtime": 1786471714.6153548,
+    "ast_hash": "7544791e03fae691a2a58047b6c0d629",
     "semantic_hash": ""
   },
   "src/api/index.js": {
-    "mtime": 1785561302.973298,
-    "ast_hash": "4986175eac3320f24bc97e42c87ea00e",
+    "mtime": 1786471123.4510777,
+    "ast_hash": "806dee171534909771598be6f4453e43",
     "semantic_hash": ""
   },
   "src/components/Correlations/Correlations.jsx": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "src/layouts/MainLayout.jsx": {
-    "mtime": 1786388725.1066885,
-    "ast_hash": "f79fbb4ce051cf71c7fc87e753ef37db",
+    "mtime": 1786468785.2997932,
+    "ast_hash": "e36dfd785caaf89db8436b1d62ff572b",
     "semantic_hash": ""
   },
   "src/main.jsx": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "src/pages/EventDetail.jsx": {
-    "mtime": 1786389380.8879285,
-    "ast_hash": "084d08b72b73eae0bbdfb5a52d33a590",
+    "mtime": 1786468033.3965847,
+    "ast_hash": "89bad628b7348a27b822258f4ca8ed86",
     "semantic_hash": ""
   },
   "src/pages/Events.jsx": {
@@ -170,13 +170,13 @@
     "semantic_hash": ""
   },
   "src/pages/Integrations.jsx": {
-    "mtime": 1786389430.5281982,
-    "ast_hash": "a993502b6dd36793273e7bcdf1004694",
+    "mtime": 1786467930.6311402,
+    "ast_hash": "ea4f47b711fceceb6d1ce3e62571ee1b",
     "semantic_hash": ""
   },
   "src/pages/Login.jsx": {
-    "mtime": 1785561302.9801242,
-    "ast_hash": "7171bc0ed570dbac0a1ae6e61430b194",
+    "mtime": 1786471731.2724626,
+    "ast_hash": "0e6ce38d87e877b152c00dd9070f69f0",
     "semantic_hash": ""
   },
   "src/pages/Rewind.jsx": {
@@ -200,8 +200,8 @@
     "semantic_hash": ""
   },
   "src/service/api-key.js": {
-    "mtime": 1785561302.9813929,
-    "ast_hash": "e359c7d04102a14bf560be9634c09196",
+    "mtime": 1786471213.8005228,
+    "ast_hash": "34228561fbd196a09f67a648283fa003",
     "semantic_hash": ""
   },
   "src/service/auth.js": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "src/service/organization.js": {
-    "mtime": 1785561302.9815562,
-    "ast_hash": "ebe7d764e03176310579f0bafe9c53f5",
+    "mtime": 1786471698.6890788,
+    "ast_hash": "9e244ab5eef094e7ea7cadb0454459c7",
     "semantic_hash": ""
   },
   "src/stores/useOrgStore.js": {
@@ -220,8 +220,8 @@
     "semantic_hash": ""
   },
   "src/util/index.js": {
-    "mtime": 1785577373.5591664,
-    "ast_hash": "d780fdb97793a6c275c9dda0e1c05272",
+    "mtime": 1786468002.1600845,
+    "ast_hash": "32b804292aea1acaa73c0ce97b265d2e",
     "semantic_hash": ""
   },
   "tailwind.config.js": {
@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "src/pages/CompleteProfile.jsx": {
-    "mtime": 1785561302.9794188,
-    "ast_hash": "49e70dd0c3f98de588df34679e869432",
+    "mtime": 1786471739.1935575,
+    "ast_hash": "94549cf8b99945667ef28070898e946a",
     "semantic_hash": ""
   },
   "src/pages/OAuthCallback.jsx": {
@@ -437,6 +437,16 @@
   ".agents/skills/staff-frontend/SKILL.md": {
     "mtime": 1786387559.1211076,
     "ast_hash": "5c24776309706eba29c12706c2ef8dcd",
+    "semantic_hash": ""
+  },
+  "src/hooks/useOrganizationCount.js": {
+    "mtime": 1786471704.5345047,
+    "ast_hash": "31b8c077b6a4e8eb9b542ba7e4981c8e",
+    "semantic_hash": ""
+  },
+  "src/util/analytics.js": {
+    "mtime": 1786471709.168078,
+    "ast_hash": "8af6c5e4863cf9ea8bc4310b9548e7f0",
     "semantic_hash": ""
   }
 }

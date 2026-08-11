@@ -13,10 +13,14 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { oauthSignup } from '../service/auth';
 import { toast } from '../components/ui/Toast';
+import { useOrganizationCount } from '../hooks/useOrganizationCount';
+import { trackEvent } from '../util/analytics';
+
 
 const CompleteProfile = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { count, maxOrgs, isLimitReached } = useOrganizationCount();
 
     // Retrieve state passed from OAuthCallback
     const state = location.state || {};
@@ -87,7 +91,14 @@ const CompleteProfile = () => {
         e.preventDefault();
         setValidationError('');
 
+        if (isLimitReached) {
+            setValidationError(`We have reached the signup limit for BETA access (${maxOrgs}/${maxOrgs} organizations registered).`);
+            trackEvent('oauth_signup_blocked_limit', 'auth', `count_${count}`);
+            return;
+        }
+
         if (!form.name.trim()) {
+
             setValidationError('Your name is required.');
             return;
         }
@@ -129,7 +140,33 @@ const CompleteProfile = () => {
                     <p className="text-text-muted text-xs leading-relaxed">
                         Almost there! Create your workspace and define your role to finish your {provider === 'google' ? 'Google' : 'GitHub'} registration.
                     </p>
+
+                    {/* Capacity Badge */}
+                    <div className="flex items-center justify-between pt-2 pb-1">
+                        <span className="text-[11px] font-medium text-text-secondary">Registration Capacity</span>
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                            isLimitReached 
+                                ? 'bg-red-500/10 border-red-500/30 text-red-400 font-semibold' 
+                                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                        }`}>
+                            Beta: {count}/{maxOrgs} Orgs
+                        </span>
+                    </div>
+
+                    {/* BETA Limit Alert Banner */}
+                    {isLimitReached && (
+                        <div className="bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs p-3.5 rounded-xl flex items-start gap-3 text-left animate-fade-in shadow-inner my-2">
+                            <AlertCircle size={18} className="shrink-0 text-amber-400 mt-0.5" />
+                            <div className="space-y-1">
+                                <div className="font-semibold text-amber-200">Signup Limit Reached for BETA Access</div>
+                                <p className="text-[11px] text-amber-200/80 leading-relaxed font-normal">
+                                    We have reached our maximum limit of {maxOrgs} registered organizations for BETA access. Profile setup is temporarily blocked.
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
+
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Email (readonly) */}
@@ -225,14 +262,16 @@ const CompleteProfile = () => {
 
                     <button
                         type="submit"
-                        disabled={loading}
-                        className="w-full flex items-center justify-center gap-2 bg-gradient-accent py-2.5 rounded-lg text-xs font-semibold hover:opacity-95 disabled:opacity-50 transition-all active:scale-[0.985] text-white shadow-lg shadow-accent/10 mt-2"
+                        disabled={loading || isLimitReached}
+                        className="w-full flex items-center justify-center gap-2 bg-gradient-accent py-2.5 rounded-lg text-xs font-semibold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.985] text-white shadow-lg shadow-accent/10 mt-2"
                     >
                         {loading ? (
                             <>
                                 <Loader2 className="animate-spin text-white" size={14} />
                                 Creating Workspace...
                             </>
+                        ) : isLimitReached ? (
+                            'Registration Blocked (BETA Limit Reached)'
                         ) : (
                             <>
                                 Complete Registration
@@ -240,6 +279,7 @@ const CompleteProfile = () => {
                             </>
                         )}
                     </button>
+
                 </form>
             </div>
         </div>

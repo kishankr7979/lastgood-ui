@@ -37,6 +37,9 @@ api.interceptors.response.use(
         window.location.href = "/login";
         toast.error("Session expired, please login again");
       }
+    } else if (error.response?.status === 404 || originalRequest?.skipToast) {
+      // 404 responses (e.g. missing optional API keys or GitHub integrations) are handled gracefully by UI components.
+      // Do not display intrusive global error toasts.
     } else {
       const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || "An unexpected error occurred";
       toast.error(errorMessage);

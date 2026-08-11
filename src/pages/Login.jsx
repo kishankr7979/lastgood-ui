@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { loginUser, resetPassword, signupUser } from '../service/auth';
+import { useOrganizationCount } from '../hooks/useOrganizationCount';
+import { trackEvent } from '../util/analytics';
 
 const timelineSteps = [
     {
@@ -47,6 +49,7 @@ const timelineSteps = [
 
 const Login = () => {
     const navigate = useNavigate();
+    const { count, maxOrgs, isLimitReached } = useOrganizationCount();
 
     const [step, setStep] = useState('login');
     const [validationError, setValidationError] = useState('');
@@ -214,6 +217,11 @@ const Login = () => {
 
     const handleSignup = () => {
         setValidationError('');
+        if (isLimitReached) {
+            setValidationError(`We have reached the signup limit for BETA access (${maxOrgs}/${maxOrgs} organizations registered).`);
+            trackEvent('signup_blocked_limit', 'auth', `count_${count}`);
+            return;
+        }
         if (!signupCreds.org_name.trim()) {
             setValidationError('Organization name is required.');
             return;
@@ -492,6 +500,31 @@ const Login = () => {
                     {/* SIGNUP FORM */}
                     {step === 'signup' && (
                         <div className="space-y-4.5">
+                            {/* Capacity Badge */}
+                            <div className="flex items-center justify-between pb-1">
+                                <span className="text-[11px] font-medium text-text-secondary">Registration Capacity</span>
+                                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                                    isLimitReached 
+                                        ? 'bg-red-500/10 border-red-500/30 text-red-400 font-semibold' 
+                                        : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                                }`}>
+                                    Beta: {count}/{maxOrgs} Orgs
+                                </span>
+                            </div>
+
+                            {/* BETA Limit Alert Banner */}
+                            {isLimitReached && (
+                                <div className="bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs p-3.5 rounded-xl flex items-start gap-3 animate-fade-in shadow-inner">
+                                    <AlertCircle size={18} className="shrink-0 text-amber-400 mt-0.5" />
+                                    <div className="space-y-1">
+                                        <div className="font-semibold text-amber-200">Signup Limit Reached for BETA Access</div>
+                                        <p className="text-[11px] text-amber-200/80 leading-relaxed font-normal">
+                                            We have reached our maximum limit of {maxOrgs} registered organizations for BETA access. New signups are currently blocked.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-medium text-text-secondary">Organization Name</label>
                                 <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 focus-within:border-accent/50 focus-within:ring-1 focus-within:ring-accent/10 transition-all font-sans">
@@ -502,7 +535,7 @@ const Login = () => {
                                         onChange={handleOrgNameChange}
                                         className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted"
                                         placeholder="Acme Corp"
-                                        disabled={signupLoading}
+                                        disabled={signupLoading || isLimitReached}
                                     />
                                 </div>
                             </div>
@@ -515,7 +548,7 @@ const Login = () => {
                                         value={signupCreds.role}
                                         onChange={(e) => setSignupCreds(prev => ({ ...prev, role: e.target.value }))}
                                         className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted border-none p-0 cursor-pointer"
-                                        disabled={signupLoading}
+                                        disabled={signupLoading || isLimitReached}
                                         style={{ colorScheme: 'dark' }}
                                     >
                                         <option value="admin" className="bg-[#030611] text-white">Admin</option>
@@ -535,7 +568,7 @@ const Login = () => {
                                         onChange={(e) => setSignupCreds(prev => ({ ...prev, email: e.target.value }))}
                                         className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted"
                                         placeholder="name@company.com"
-                                        disabled={signupLoading}
+                                        disabled={signupLoading || isLimitReached}
                                     />
                                 </div>
                             </div>
@@ -550,12 +583,12 @@ const Login = () => {
                                         onChange={(e) => setSignupCreds(prev => ({ ...prev, password: e.target.value }))}
                                         className="flex-1 bg-transparent outline-none text-xs text-white placeholder-white/20 disabled:text-text-muted"
                                         placeholder="••••••••"
-                                        disabled={signupLoading}
+                                        disabled={signupLoading || isLimitReached}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(v => !v)}
-                                        disabled={signupLoading}
+                                        disabled={signupLoading || isLimitReached}
                                         className="text-text-muted hover:text-white transition-colors"
                                     >
                                         {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -572,14 +605,16 @@ const Login = () => {
 
                             <button
                                 onClick={handleSignup}
-                                disabled={signupLoading}
-                                className="w-full flex items-center justify-center gap-2 bg-gradient-accent py-2.5 rounded-lg text-xs font-semibold hover:opacity-95 disabled:opacity-50 transition-all active:scale-[0.985] text-white shadow-lg shadow-accent/10"
+                                disabled={signupLoading || isLimitReached}
+                                className="w-full flex items-center justify-center gap-2 bg-gradient-accent py-2.5 rounded-lg text-xs font-semibold hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.985] text-white shadow-lg shadow-accent/10"
                             >
                                 {signupLoading ? (
                                     <>
                                         <Loader2 className="animate-spin text-white" size={14} />
                                         Creating Account...
                                     </>
+                                ) : isLimitReached ? (
+                                    'Signup Blocked (BETA Limit Reached)'
                                 ) : (
                                     <>
                                         Sign Up
@@ -587,6 +622,7 @@ const Login = () => {
                                     </>
                                 )}
                             </button>
+
 
                             <div className="text-center pt-2">
                                 <button

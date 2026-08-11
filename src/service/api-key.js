@@ -1,8 +1,15 @@
 import api from "../api";
 
 export const getAPIKeyByOrg = async (id) => {
-  const response = await api.get(`/api-keys/${id}`);
-  return response.data.data;
+  try {
+    const response = await api.get(`/api-keys/${id}`);
+    return response.data.data;
+  } catch (err) {
+    if (err.response?.status === 404) {
+      return null;
+    }
+    throw err;
+  }
 };
 
 export const createAPIKey = async (name) => {

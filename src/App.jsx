@@ -17,23 +17,22 @@ import Topology from "./pages/Topology";
 import { ToastContainer } from "./components/ui/Toast";
 import useHelpLoom from "./hooks/useHelpLoom";
 import { isIframe, isDevelopment } from "./util";
+import { initGA, trackPageView } from "./util/analytics";
 
-// Global Guard to lock down the app to Sandbox-only mode
+// Global Guard for handling query params or flags without locking production users to Sandbox
 const GlobalGuard = ({ children }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  // Set flag in sessionStorage if query param is present so it persists across navigation
+  // Initialize analytics & track route change
+  React.useEffect(() => {
+    initGA();
+    trackPageView(location.pathname + location.search);
+  }, [location]);
+
+  // Store forceAllow or demo flags if needed
   if (queryParams.get("forceAllow") === "true") {
     localStorage.setItem("forceAllow", "true");
-  }
-
-  const isForceAllowed = localStorage.getItem("forceAllow") === "true" || isDevelopment;
-  const isSandboxRoute = location.pathname.startsWith('/sandbox');
-
-  // If not force allowed and not on the sandbox route, redirect to sandbox
-  if (!isForceAllowed && !isSandboxRoute) {
-    return <Navigate to="/sandbox" replace />;
   }
 
   return children;
