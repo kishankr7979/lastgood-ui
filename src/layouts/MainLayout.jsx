@@ -5,7 +5,6 @@ import {
   List,
   Settings,
   LogOut,
-  History,
   Blocks,
   Server,
   UserCircle,
@@ -40,8 +39,8 @@ const MainLayout = () => {
       <aside className="w-64 border-r border-slate-800 bg-[#111827] flex flex-col fixed h-full z-50">
         <div className="p-5 pb-3">
           <div className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-md bg-indigo-950/60 border border-indigo-500/30 shadow-sm group-hover:border-indigo-400 transition-all duration-300">
-               <History className="h-4 w-4 text-indigo-400 relative z-10 group-hover:rotate-45 transition-transform duration-300" />
+            <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-md border border-slate-800 shadow-sm group-hover:border-indigo-500/50 transition-all duration-300">
+               <img src="/logo.jpg" alt="LastGood" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
             </div>
             <div className="flex flex-col">
               <span className="text-base font-bold tracking-tight text-white flex items-center gap-1">
