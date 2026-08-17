@@ -93,11 +93,6 @@ const RewindAiDiagnosisPanel = ({ scoringResult, selectedEventId, queryParams })
                 {summaryStats.correlations_found} Correlations Detected
               </span>
             )}
-            {aiDiagnosis?.source && !aiDiagnosis.source.toLowerCase().includes('fallback') && !aiDiagnosis.source.toLowerCase().includes('rule') && (
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase">
-                Source: {aiDiagnosis.source}
-              </span>
-            )}
           </div>
           <h2 className="text-base font-bold text-white flex items-center gap-2">
             <ShieldAlert className={overallLevel === 'critical' ? 'text-rose-500 animate-pulse' : 'text-amber-400'} size={18} />

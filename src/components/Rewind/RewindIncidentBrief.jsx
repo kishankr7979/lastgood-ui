@@ -81,11 +81,6 @@ export const RewindIncidentBrief = ({ scoringResult, queryParams, onSwitchToDeta
                   {correlations.length} Risk Correlations
                 </span>
               )}
-              {aiDiagnosis?.source && !aiDiagnosis.source.toLowerCase().includes('fallback') && !aiDiagnosis.source.toLowerCase().includes('rule') && (
-                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase">
-                  AI: {aiDiagnosis.source}
-                </span>
-              )}
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2 mt-1">
               <ShieldAlert className="text-rose-500 animate-pulse" size={22} />

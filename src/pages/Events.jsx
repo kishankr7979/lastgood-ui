@@ -105,7 +105,7 @@ const Events = () => {
                 actions={
                     <button
                         onClick={() => navigate('/rewind')}
-                        className="bg-white hover:bg-zinc-200 text-black font-mono font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-xs shadow-sm cursor-pointer"
+                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-mono font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-all text-xs shadow-sm cursor-pointer"
                     >
                         <Sparkles size={14} />
                         <span>Run AI Rewind Diagnosis</span>
@@ -115,42 +115,42 @@ const Events = () => {
 
             {/* SRE Stat Cards Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-                <div className="p-3.5 bg-[#0c0c0e] border border-white/10 rounded-xl flex items-center justify-between shadow-sm">
+                <div className="p-3.5 bg-[#111827] border border-slate-800 rounded-xl flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">Total Telemetry Events</span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">Total Telemetry Events</span>
                         <span className="text-xl font-bold text-white font-mono">{totalEventsCount}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-zinc-300">
+                    <div className="p-2 rounded-lg bg-indigo-950/60 border border-indigo-500/30 text-indigo-400">
                         <List size={16} />
                     </div>
                 </div>
 
-                <div className="p-3.5 bg-[#0c0c0e] border border-white/10 rounded-xl flex items-center justify-between shadow-sm">
+                <div className="p-3.5 bg-[#111827] border border-slate-800 rounded-xl flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">Prod Changes</span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">Prod Changes</span>
                         <span className="text-xl font-bold text-rose-400 font-mono">{metrics.prodCount}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400">
+                    <div className="p-2 rounded-lg bg-rose-950/60 border border-rose-500/30 text-rose-400">
                         <ShieldAlert size={16} />
                     </div>
                 </div>
 
-                <div className="p-3.5 bg-[#0c0c0e] border border-white/10 rounded-xl flex items-center justify-between shadow-sm">
+                <div className="p-3.5 bg-[#111827] border border-slate-800 rounded-xl flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">DB Schema Migrations</span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">DB Schema Migrations</span>
                         <span className="text-xl font-bold text-amber-400 font-mono">{metrics.migrationCount}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                    <div className="p-2 rounded-lg bg-amber-950/60 border border-amber-500/30 text-amber-400">
                         <Database size={16} />
                     </div>
                 </div>
 
-                <div className="p-3.5 bg-[#0c0c0e] border border-white/10 rounded-xl flex items-center justify-between shadow-sm">
+                <div className="p-3.5 bg-[#111827] border border-slate-800 rounded-xl flex items-center justify-between shadow-sm">
                     <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">Services Changed</span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">Services Changed</span>
                         <span className="text-xl font-bold text-white font-mono">{metrics.serviceCount}</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-white/5 border border-white/10 text-zinc-300">
+                    <div className="p-2 rounded-lg bg-indigo-950/60 border border-indigo-500/30 text-indigo-400">
                         <Server size={16} />
                     </div>
                 </div>
@@ -176,7 +176,7 @@ const Events = () => {
             </div>
 
             {/* Scrollable Timeline Section */}
-            <div className="bg-[#0c0c0e] border border-white/10 rounded-xl p-6 relative shadow-sm">
+            <div className="bg-[#111827] border border-slate-800 rounded-xl p-6 relative shadow-sm">
                 <Timeline events={filteredEvents} isLoading={isLoading || !data} error={error} />
 
                 {hasNextPage && (
@@ -184,11 +184,11 @@ const Events = () => {
                         <button
                             onClick={() => fetchNextPage()}
                             disabled={isFetchingNextPage}
-                            className="flex items-center gap-2 px-5 py-2 bg-[#070709] hover:bg-zinc-900 border border-white/10 hover:border-white/20 rounded-lg text-xs font-mono font-bold text-white transition-all disabled:opacity-50 uppercase tracking-wider"
+                            className="flex items-center gap-2 px-5 py-2 bg-[#0b0e14] hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-lg text-xs font-mono font-bold text-white transition-all disabled:opacity-50 uppercase tracking-wider cursor-pointer"
                         >
                             {isFetchingNextPage ? (
                                 <>
-                                    <Loader2 size={15} className="animate-spin text-zinc-400" />
+                                    <Loader2 size={15} className="animate-spin text-indigo-400" />
                                     <span>Loading...</span>
                                 </>
                             ) : (

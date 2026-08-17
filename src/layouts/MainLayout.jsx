@@ -35,25 +35,25 @@ const MainLayout = () => {
   ];
 
   return (
-    <div className="flex min-h-screen font-sans bg-[#030305] text-zinc-100">
+    <div className="flex min-h-screen font-sans bg-[#0b0e14] text-slate-100">
       {/* Sidebar - Obsidian Enterprise Pane */}
-      <aside className="w-64 border-r border-white/[0.08] bg-[#060608] flex flex-col fixed h-full z-50">
+      <aside className="w-64 border-r border-slate-800 bg-[#111827] flex flex-col fixed h-full z-50">
         <div className="p-5 pb-3">
           <div className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 border border-white/15 shadow-sm group-hover:border-sky-500/40 transition-all duration-300">
-               <History className="h-4 w-4 text-sky-400 relative z-10 group-hover:rotate-45 transition-transform duration-300" />
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-md bg-indigo-950/60 border border-indigo-500/30 shadow-sm group-hover:border-indigo-400 transition-all duration-300">
+               <History className="h-4 w-4 text-indigo-400 relative z-10 group-hover:rotate-45 transition-transform duration-300" />
             </div>
             <div className="flex flex-col">
               <span className="text-base font-bold tracking-tight text-white flex items-center gap-1">
-                Last<span className="text-sky-400 font-mono tracking-tighter">Good</span>
+                Last<span className="text-slate-400 font-mono tracking-tighter">Good</span>
               </span>
-              <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest leading-none">Enterprise Platform</span>
+              <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest leading-none">Enterprise Platform</span>
             </div>
           </div>
         </div>
 
-        <div className="px-4 py-2 border-b border-white/[0.06] mb-3">
-          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-emerald-500/20 bg-emerald-500/5">
+        <div className="px-4 py-2 border-b border-slate-800/80 mb-3">
+          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-emerald-500/30 bg-emerald-950/60">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -63,7 +63,7 @@ const MainLayout = () => {
         </div>
 
         <div className="px-4 py-1">
-           <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider mb-2 block">Platform Navigation</span>
+           <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-2 block">Platform Navigation</span>
         </div>
 
         <nav className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
@@ -74,19 +74,19 @@ const MainLayout = () => {
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all group relative ${
+                  `flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 group relative ${
                     isActive
-                      ? "bg-white/10 text-white font-semibold shadow-sm border border-white/10"
-                      : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+                      ? "bg-indigo-950/60 text-white font-semibold shadow-sm border border-indigo-500/30"
+                      : "text-slate-400 hover:text-white hover:bg-slate-900/50"
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
                     {isActive && (
-                      <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-sky-400"></span>
+                      <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-indigo-500"></span>
                     )}
-                    <Icon size={16} className={isActive ? "text-sky-400" : "text-zinc-500 group-hover:text-zinc-300"} />
+                    <Icon size={16} className={isActive ? "text-indigo-400" : "text-slate-400 group-hover:text-slate-200"} />
                     <span className="relative z-10">{item.label}</span>
                   </>
                 )}
@@ -96,20 +96,20 @@ const MainLayout = () => {
         </nav>
 
         {/* Footer Organization & Logout Info */}
-        <div className="p-3 border-t border-white/[0.08] bg-[#050507]">
-          <div className="p-2.5 rounded-lg flex items-center gap-3 border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-            <div className="w-7 h-7 rounded-md bg-zinc-800 border border-white/10 flex items-center justify-center font-mono font-bold text-white text-xs">
+        <div className="p-3 border-t border-slate-800 bg-[#0b0e14]">
+          <div className="p-2.5 rounded-lg flex items-center gap-3 border border-slate-800 bg-[#111827] hover:border-slate-700 transition-colors">
+            <div className="w-7 h-7 rounded-md bg-slate-800 border border-slate-700 flex items-center justify-center font-mono font-bold text-white text-xs">
               {org?.name?.charAt(0) || 'O'}
             </div>
             <div className="flex flex-col flex-1 overflow-hidden">
               <span className="text-xs font-bold text-white truncate leading-tight">
                 {org?.name || 'Organization'}
               </span>
-              <span className="text-[10px] text-zinc-400 font-mono leading-tight">{org?.plan || 'Free'} Plan</span>
+              <span className="text-[10px] text-slate-400 font-mono leading-tight">{org?.plan || 'Free'} Plan</span>
             </div>
             <button
               onClick={() => setIsLogoutModalOpen(true)}
-              className="text-zinc-500 hover:text-rose-400 transition-colors p-1.5 rounded-md hover:bg-rose-500/10 cursor-pointer"
+              className="text-slate-400 hover:text-rose-400 transition-colors p-1.5 rounded-md hover:bg-rose-950/50 cursor-pointer"
               title="Logout"
             >
               <LogOut size={15} />
@@ -119,7 +119,7 @@ const MainLayout = () => {
       </aside>
 
       {/* Main Content Pane */}
-      <main className="flex-1 ml-64 relative min-w-0 bg-[#030305] min-h-screen flex flex-col overflow-x-hidden">
+      <main className="flex-1 ml-64 relative min-w-0 bg-[#0b0e14] min-h-screen flex flex-col overflow-x-hidden">
         <div className="flex-1 flex flex-col">
           <Outlet />
         </div>
