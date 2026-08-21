@@ -249,7 +249,7 @@ const Services = () => {
                         )}
                         <button
                             onClick={() => setIsCreateOpen(true)}
-                            className="flex items-center gap-2 bg-white hover:bg-zinc-200 px-4 py-2 rounded-lg text-xs font-mono font-bold transition-all text-black shadow-sm cursor-pointer"
+                            className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-lg text-xs font-mono font-bold transition-all text-white shadow-sm cursor-pointer"
                         >
                             <Plus size={14} />
                             Connect Service
@@ -649,7 +649,7 @@ const Services = () => {
                                     <button
                                         type="submit"
                                         disabled={creating}
-                                        className="flex items-center gap-2 bg-gradient-accent px-5 py-2.5 rounded-xl text-xs font-semibold text-black hover:opacity-90 transition-all disabled:opacity-50"
+                                            className="flex items-center gap-2 bg-gradient-accent px-5 py-2.5 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-all disabled:opacity-50"
                                     >
                                         {creating && <Loader2 size={14} className="animate-spin" />}
                                         Generate Key

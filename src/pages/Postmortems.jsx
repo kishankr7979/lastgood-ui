@@ -20,6 +20,7 @@ export default function Postmortems() {
   const [service, setService] = useState("");
   const [incidentTitle, setIncidentTitle] = useState("");
   const [severity, setSeverity] = useState("CRITICAL");
+  const [window, setWindow] = useState("30m");
   const [incidentTimestamp, setIncidentTimestamp] = useState(
     new Date(Date.now() - 30 * 60 * 1000).toISOString().substring(0, 16)
   );
@@ -85,6 +86,7 @@ export default function Postmortems() {
         incidentTitle: incidentTitle || `Production Outage: ${service}`,
         severity,
         incidentTimestamp: new Date(incidentTimestamp).toISOString(),
+        window,
       });
 
       if (res.data?.success) {
@@ -224,10 +226,26 @@ export default function Postmortems() {
                   </div>
                 </div>
 
+                <div>
+                  <label className="text-xs font-medium text-text-secondary block mb-1.5">Incident Window</label>
+                  <select
+                    value={window}
+                    onChange={(e) => setWindow(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent"
+                  >
+                    <option value="15m" className="bg-zinc-900">15 Minutes</option>
+                    <option value="30m" className="bg-zinc-900">30 Minutes</option>
+                    <option value="1h" className="bg-zinc-900">1 Hour</option>
+                    <option value="2h" className="bg-zinc-900">2 Hours</option>
+                    <option value="6h" className="bg-zinc-900">6 Hours</option>
+                    <option value="1d" className="bg-zinc-900">24 Hours</option>
+                  </select>
+                </div>
+
                 <button
                   type="submit"
                   disabled={generating}
-                  className="w-full py-2.5 px-4 rounded-xl bg-accent text-black font-semibold text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-xl bg-accent text-white font-semibold text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
                 >
                   {generating ? (
                     <>

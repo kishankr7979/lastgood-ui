@@ -202,7 +202,7 @@ export const RewindIncidentBrief = ({ scoringResult, queryParams, onSwitchToDeta
                 onClick={() => {
                   toast.info(`Contact change author: ${primaryAuthor}`);
                 }}
-                className="bg-accent hover:opacity-90 text-black font-bold px-4 py-2 rounded-xl flex items-center gap-2 text-xs transition-all shadow-lg shadow-accent/15"
+                className="bg-accent hover:opacity-90 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-2 text-xs transition-all shadow-lg shadow-accent/15"
               >
                 <User size={14} />
                 <span>Contact Author (@{primaryAuthor})</span>

@@ -152,7 +152,7 @@ export default function Topology() {
           realServiceNames.length > 0 && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="py-2 px-3.5 rounded-lg bg-white hover:bg-zinc-200 text-black font-mono font-bold text-xs flex items-center gap-2 transition-all shadow-sm cursor-pointer"
+              className="py-2 px-3.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-mono font-bold text-xs flex items-center gap-2 transition-all shadow-sm cursor-pointer"
             >
               <Plus size={14} />
               <span>Add Dependency Link</span>
@@ -221,7 +221,7 @@ export default function Topology() {
             <div className="pt-2">
               <button
                 onClick={() => navigate("/integrations")}
-                className="py-3 px-6 rounded-xl bg-accent text-black font-semibold text-xs inline-flex items-center gap-2 hover:brightness-110 transition-all shadow-lg"
+                className="py-3 px-6 rounded-xl bg-accent text-white font-semibold text-xs inline-flex items-center gap-2 hover:brightness-110 transition-all shadow-lg"
               >
                 <span>Set Up Integration to Ingest Services</span>
                 <ArrowRight size={14} />
@@ -286,7 +286,7 @@ export default function Topology() {
                 <button
                   type="submit"
                   disabled={adding}
-                  className="w-full py-2.5 px-4 rounded-xl bg-accent text-black font-semibold text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-xl bg-accent text-white font-semibold text-xs flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50"
                 >
                   <Plus size={14} />
                   <span>Link Dependency Edge</span>
@@ -504,7 +504,7 @@ export default function Topology() {
                 <button
                   type="submit"
                   disabled={adding}
-                  className="px-4 py-2 rounded-xl bg-accent text-black font-semibold text-xs flex items-center gap-1.5 hover:brightness-110"
+                  className="px-4 py-2 rounded-xl bg-accent text-white font-semibold text-xs flex items-center gap-1.5 hover:brightness-110"
                 >
                   <Plus size={14} />
                   <span>Create Link</span>

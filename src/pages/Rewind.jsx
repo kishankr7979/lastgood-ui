@@ -163,7 +163,7 @@ const Rewind = () => {
 
           <button
             type="submit"
-            className="bg-white hover:bg-zinc-200 text-black font-bold px-5 py-2 rounded-lg flex items-center gap-2 transition-all h-[36px] text-xs shadow-sm cursor-pointer"
+            className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-5 py-2 rounded-lg flex items-center gap-2 transition-all h-[36px] text-xs shadow-sm cursor-pointer"
           >
             <Search size={14} />
             Run Rewind Diagnostic
@@ -192,7 +192,7 @@ const Rewind = () => {
                   onClick={() => setViewMode('brief')}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-mono font-medium transition-all ${
                     viewMode === 'brief'
-                      ? 'bg-white text-black shadow-sm'
+                      ? 'bg-zinc-700 text-white shadow-sm'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -204,7 +204,7 @@ const Rewind = () => {
                   onClick={() => setViewMode('detailed')}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-mono font-medium transition-all ${
                     viewMode === 'detailed'
-                      ? 'bg-white text-black shadow-sm'
+                      ? 'bg-zinc-700 text-white shadow-sm'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
