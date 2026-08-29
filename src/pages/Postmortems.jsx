@@ -20,7 +20,7 @@ export default function Postmortems() {
   const [service, setService] = useState("");
   const [incidentTitle, setIncidentTitle] = useState("");
   const [severity, setSeverity] = useState("CRITICAL");
-  const [window, setWindow] = useState("30m");
+  const [timeWindow, setTimeWindow] = useState("30m");
   const [incidentTimestamp, setIncidentTimestamp] = useState(
     new Date(Date.now() - 30 * 60 * 1000).toISOString().substring(0, 16)
   );
@@ -86,7 +86,7 @@ export default function Postmortems() {
         incidentTitle: incidentTitle || `Production Outage: ${service}`,
         severity,
         incidentTimestamp: new Date(incidentTimestamp).toISOString(),
-        window,
+        window: timeWindow,
       });
 
       if (res.data?.success) {
@@ -229,8 +229,8 @@ export default function Postmortems() {
                 <div>
                   <label className="text-xs font-medium text-text-secondary block mb-1.5">Incident Window</label>
                   <select
-                    value={window}
-                    onChange={(e) => setWindow(e.target.value)}
+                    value={timeWindow}
+                    onChange={(e) => setTimeWindow(e.target.value)}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-accent"
                   >
                     <option value="15m" className="bg-zinc-900">15 Minutes</option>
@@ -279,11 +279,10 @@ export default function Postmortems() {
                     <div
                       key={p.id}
                       onClick={() => setSelectedPostmortem(p)}
-                      className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
-                        isSelected
+                      className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${isSelected
                           ? "bg-accent/10 border-accent/40 text-white"
                           : "bg-white/5 border-white/5 text-text-secondary hover:border-white/20 hover:text-white"
-                      }`}
+                        }`}
                     >
                       <div className="space-y-1 min-w-0 pr-2">
                         <div className="text-xs font-semibold truncate">{p.title}</div>
@@ -374,11 +373,10 @@ export default function Postmortems() {
                         <span className="font-semibold text-white">{t.summary}</span>
                       </div>
                       <span
-                        className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
-                          t.impact_level === "PRIMARY_CULPRIT"
+                        className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${t.impact_level === "PRIMARY_CULPRIT"
                             ? "bg-red-500/20 text-red-400 border border-red-500/30"
                             : "bg-white/10 text-text-secondary"
-                        }`}
+                          }`}
                       >
                         {t.impact_level}
                       </span>
